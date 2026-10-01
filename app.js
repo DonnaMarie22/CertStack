@@ -83,3 +83,17 @@ document.getElementById("finishBtn").addEventListener("click",()=>showQuest("com
 document.getElementById("replayBtn").addEventListener("click",()=>showQuest("cloud"));
 document.querySelectorAll(".map-node").forEach((btn,i)=>btn.addEventListener("click",()=>{if(!btn.disabled)showQuest(quests[i]);}));
 renderStats();
+
+document.querySelectorAll(".service-chip, .task-chip").forEach((chip)=>{
+  chip.addEventListener("click",(event)=>{
+    event.preventDefault();
+    const wasOpen=chip.classList.contains("open");
+    document.querySelectorAll(".service-chip.open, .task-chip.open").forEach((openChip)=>openChip.classList.remove("open"));
+    if(!wasOpen) chip.classList.add("open");
+  });
+});
+document.addEventListener("click",(event)=>{
+  if(!event.target.closest(".service-chip, .task-chip")){
+    document.querySelectorAll(".service-chip.open, .task-chip.open").forEach((openChip)=>openChip.classList.remove("open"));
+  }
+});
