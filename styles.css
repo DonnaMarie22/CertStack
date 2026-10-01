@@ -70,3 +70,24 @@ footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;backgr
 
 .service-chip.open .service-tooltip,
 .task-chip.open .service-tooltip{display:block}
+
+.task-chip{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  cursor:help;
+  color:var(--text)
+}
+.task-chip:hover,.task-chip:focus{
+  background:var(--pink);
+  color:#111;
+  outline:none
+}
+.task-label{
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:1px
+}
