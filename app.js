@@ -41,7 +41,15 @@ function success(feedback,message,button,quest,xp){
   }
   feedback.className="feedback good";
   feedback.textContent=message+" +"+xp+" XP";
-  button.classList.remove("hidden");
+  button.disabled=false;
+  button.classList.remove("locked-btn");
+  const labels={
+    cloudContinue:"UNLOCK QUEST 2 →",
+    sharedContinue:"UNLOCK QUEST 3 →",
+    modelsContinue:"UNLOCK QUEST 4 →",
+    finishBtn:"COMPLETE MODULE ★"
+  };
+  if(labels[button.id]) button.textContent=labels[button.id];
 }
 function fail(feedback,message){
   feedback.className="feedback bad";
