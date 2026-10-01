@@ -1,104 +1,85 @@
-const state = {
-  xp: Number(localStorage.getItem("certstack-xp") || 0),
-  level: Number(localStorage.getItem("certstack-level") || 1),
-  playSolved: false,
-  battleSolved: false
+const state={
+  xp:Number(localStorage.getItem("certstack-xp")||0),
+  level:Number(localStorage.getItem("certstack-level")||1),
+  completed:new Set()
 };
 
-const stages = [...document.querySelectorAll(".stage")];
-const xpBar = document.getElementById("xpBar");
-const xpLabel = document.getElementById("xpLabel");
-const levelLabel = document.getElementById("levelLabel");
+const quests=["cloud","shared","models","cost"];
+const questLabel=document.getElementById("questLabel");
+const xpBar=document.getElementById("xpBar");
+const xpLabel=document.getElementById("xpLabel");
+const levelLabel=document.getElementById("levelLabel");
 
-function renderStats() {
-  const xpIntoLevel = state.xp % 100;
-  levelLabel.textContent = "LVL " + state.level;
-  xpLabel.textContent = xpIntoLevel + " / 100 XP";
-  xpBar.style.width = xpIntoLevel + "%";
+function renderStats(){
+  const into=state.xp%100;
+  levelLabel.textContent="LVL "+state.level;
+  xpLabel.textContent=into+" / 100 XP";
+  xpBar.style.width=into+"%";
 }
-
-function gainXp(amount) {
-  const oldLevel = state.level;
-  state.xp += amount;
-  state.level = Math.floor(state.xp / 100) + 1;
-  localStorage.setItem("certstack-xp", state.xp);
-  localStorage.setItem("certstack-level", state.level);
+function addXp(amount){
+  state.xp+=amount;
+  state.level=Math.floor(state.xp/100)+1;
+  localStorage.setItem("certstack-xp",state.xp);
+  localStorage.setItem("certstack-level",state.level);
   renderStats();
-  return state.level > oldLevel;
+}
+function showQuest(id){
+  document.querySelectorAll(".quest").forEach(q=>q.classList.toggle("active",q.id===id));
+  const idx=quests.indexOf(id);
+  questLabel.textContent=id==="complete"?"MODULE COMPLETE":"QUEST "+(idx+1)+" / 4";
+  document.querySelectorAll(".map-node").forEach((n,i)=>{
+    n.classList.toggle("active",i===idx);
+    n.classList.toggle("done",i<idx || state.completed.has(quests[i]));
+    if(i<=idx)n.disabled=false;
+  });
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function success(feedback,message,button,quest,xp){
+  if(!state.completed.has(quest)){
+    state.completed.add(quest);
+    addXp(xp);
+  }
+  feedback.className="feedback good";
+  feedback.textContent=message+" +"+xp+" XP";
+  button.classList.remove("hidden");
+}
+function fail(feedback,message){
+  feedback.className="feedback bad";
+  feedback.textContent=message;
 }
 
-function showStage(id) {
-  stages.forEach((stage) => stage.classList.toggle("active", stage.id === id));
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
+document.querySelectorAll("[data-cloud-answer]").forEach(btn=>btn.addEventListener("click",()=>{
+  const f=document.getElementById("cloudFeedback");
+  if(btn.dataset.cloudAnswer==="rent"){
+    success(f,"YES — cloud lets you add capacity for the spike and scale back afterward.",document.getElementById("cloudContinue"),"cloud",25);
+  }else fail(f,"That is the traditional datacenter move. Cloud computing avoids buying permanent hardware for temporary demand.");
+}));
+document.getElementById("cloudContinue").addEventListener("click",()=>showQuest("shared"));
 
-document.querySelectorAll("[data-next]").forEach((btn) => {
-  btn.addEventListener("click", () => showStage(btn.dataset.next));
-});
+document.querySelectorAll("[data-shared-answer]").forEach(btn=>btn.addEventListener("click",()=>{
+  const f=document.getElementById("sharedFeedback");
+  if(btn.dataset.sharedAnswer==="provider"){
+    success(f,"RIGHT — the provider owns physical datacenter security, power, cooling, networking, and hosts.",document.getElementById("sharedContinue"),"shared",25);
+  }else fail(f,"Not in the cloud. You still own your data, devices, and identities, but the provider owns the physical datacenter.");
+}));
+document.getElementById("sharedContinue").addEventListener("click",()=>showQuest("models"));
 
-document.querySelectorAll("[data-play-answer]").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    if (state.playSolved) return;
+document.querySelectorAll("[data-model-answer]").forEach(btn=>btn.addEventListener("click",()=>{
+  const f=document.getElementById("modelFeedback");
+  if(btn.dataset.modelAnswer==="hybrid"){
+    success(f,"YES — hybrid combines private and public cloud so workloads can live in different places.",document.getElementById("modelsContinue"),"models",25);
+  }else fail(f,"Look for the model that combines private resources with public cloud resources.");
+}));
+document.getElementById("modelsContinue").addEventListener("click",()=>showQuest("cost"));
 
-    const feedback = document.getElementById("playFeedback");
+document.querySelectorAll("[data-cost-answer]").forEach(btn=>btn.addEventListener("click",()=>{
+  const f=document.getElementById("costFeedback");
+  if(btn.dataset.costAnswer==="opex"){
+    success(f,"CORRECT — paying for cloud resources as you consume them is an operational-expense, consumption-based model.",document.getElementById("finishBtn"),"cost",25);
+  }else fail(f,"CapEx is the up-front purchase of physical infrastructure. Paying as you consume cloud services is OpEx.");
+}));
 
-    if (btn.dataset.playAnswer === "customer") {
-      state.playSolved = true;
-      const leveled = gainXp(35);
-      feedback.className = "feedback good";
-      feedback.textContent =
-        "CORRECT +35 XP — In IaaS, the customer manages the guest OS. Microsoft manages the physical infrastructure." +
-        (leveled ? " LEVEL UP!" : "");
-      setTimeout(() => showStage("battleStage"), 1100);
-    } else {
-      feedback.className = "feedback bad";
-      feedback.textContent =
-        "TRY AGAIN — Microsoft manages the physical host, but in IaaS the customer still manages the guest operating system.";
-    }
-  });
-});
-
-document.querySelectorAll("[data-answer]").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    if (state.battleSolved) return;
-
-    const feedback = document.getElementById("battleFeedback");
-
-    if (btn.dataset.answer === "appservice") {
-      state.battleSolved = true;
-      const leveled = gainXp(65);
-      feedback.className = "feedback good";
-      feedback.textContent =
-        "BOSS HIT +65 XP — Azure App Service is PaaS: deploy the app without managing the OS or server infrastructure." +
-        (leveled ? " LEVEL UP!" : "");
-
-      setTimeout(() => {
-        document.getElementById("rewardText").textContent = leveled
-          ? "LEVEL UP! Your tech girl powered up after mastering the mission."
-          : "Your tech girl gained XP and moved closer to the next level.";
-        showStage("masterStage");
-      }, 1200);
-    } else {
-      feedback.className = "feedback bad";
-      feedback.textContent =
-        "NOT QUITE — Look for the option where Azure manages the platform and you focus on the application.";
-    }
-  });
-});
-
-document.getElementById("restartBtn").addEventListener("click", () => {
-  state.playSolved = false;
-  state.battleSolved = false;
-
-  const playFeedback = document.getElementById("playFeedback");
-  const battleFeedback = document.getElementById("battleFeedback");
-
-  playFeedback.className = "feedback";
-  playFeedback.textContent = "";
-  battleFeedback.className = "feedback";
-  battleFeedback.textContent = "";
-
-  showStage("learnStage");
-});
-
+document.getElementById("finishBtn").addEventListener("click",()=>showQuest("complete"));
+document.getElementById("replayBtn").addEventListener("click",()=>showQuest("cloud"));
+document.querySelectorAll(".map-node").forEach((btn,i)=>btn.addEventListener("click",()=>{if(!btn.disabled)showQuest(quests[i]);}));
 renderStats();
