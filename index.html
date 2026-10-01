@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CertStack — an 8-bit certification learning game." />
+  <title>CertStack</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="game-shell">
+    <header class="topbar">
+      <div><p class="eyebrow">CERTSTACK // AZ-900</p><h1>Cloud Quest</h1></div>
+      <div class="player-stats">
+        <span id="levelLabel">LVL 1</span>
+        <div class="xp-wrap"><div id="xpBar" class="xp-bar"></div></div>
+        <span id="xpLabel">0 / 100 XP</span>
+      </div>
+    </header>
+
+    <section class="hero-panel">
+      <div class="avatar-card">
+        <div class="pixel-girl" aria-label="8-bit Black tech girl with afro and black framed glasses">
+          <div class="afro afro-1"></div><div class="afro afro-2"></div><div class="afro afro-3"></div>
+          <div class="face"></div><div class="glasses left"></div><div class="glasses right"></div><div class="bridge"></div>
+          <div class="body"></div><div class="laptop"></div>
+        </div>
+        <div class="status-line"><span>●</span> ACTIVE LEARNER</div>
+      </div>
+      <div class="mission-card">
+        <p class="eyebrow">CURRENT MISSION</p>
+        <h2>IaaS vs PaaS vs SaaS</h2>
+        <p>Learn who manages what in the cloud, then survive the encounter.</p>
+        <div class="mission-meta"><span>☁ CLOUD CONCEPTS</span><span>+100 XP AVAILABLE</span></div>
+      </div>
+    </section>
+
+    <section id="learnStage" class="stage active">
+      <div class="stage-heading">
+        <p class="eyebrow">01 // LEARN</p><h2>Who carries the stack?</h2>
+        <p>Move from IaaS → PaaS → SaaS and Microsoft manages more of the technical stack.</p>
+      </div>
+      <div class="stack-grid">
+        <article class="stack-card">
+          <h3>IaaS</h3><p class="stack-sub">Infrastructure as a Service</p>
+          <div class="responsibility-list"><div class="you">YOU: apps, data, runtime, OS</div><div class="ms">MICROSOFT: hardware + datacenter</div></div>
+          <p class="example">Example: Azure Virtual Machines</p>
+        </article>
+        <article class="stack-card">
+          <h3>PaaS</h3><p class="stack-sub">Platform as a Service</p>
+          <div class="responsibility-list"><div class="you">YOU: app + data</div><div class="ms">MICROSOFT: OS, runtime, servers</div></div>
+          <p class="example">Example: Azure App Service</p>
+        </article>
+        <article class="stack-card">
+          <h3>SaaS</h3><p class="stack-sub">Software as a Service</p>
+          <div class="responsibility-list"><div class="you">YOU: use + configure access</div><div class="ms">MICROSOFT: application + platform</div></div>
+          <p class="example">Example: Microsoft 365</p>
+        </article>
+      </div>
+      <div class="pixel-chart">
+        <span>MORE YOU MANAGE</span>
+        <div class="chart-track"><div class="block">IaaS</div><div class="block">PaaS</div><div class="block">SaaS</div></div>
+        <span>MORE PROVIDER MANAGES</span>
+      </div>
+      <button class="primary-btn" data-next="playStage">START INTERACTIVE</button>
+    </section>
+
+    <section id="playStage" class="stage">
+      <div class="stage-heading"><p class="eyebrow">02 // PLAY</p><h2>Route the responsibility</h2><p>In IaaS, who patches the guest operating system?</p></div>
+      <div class="choice-grid">
+        <button class="choice-btn" data-play-answer="customer">YOU / CUSTOMER</button>
+        <button class="choice-btn" data-play-answer="provider">MICROSOFT / PROVIDER</button>
+      </div>
+      <div id="playFeedback" class="feedback" aria-live="polite"></div>
+    </section>
+
+    <section id="battleStage" class="stage">
+      <div class="stage-heading">
+        <p class="eyebrow">03 // BATTLE</p><h2>Scenario encounter</h2>
+        <p>A developer wants to deploy a web application without managing the operating system or underlying server infrastructure. Which option fits best?</p>
+      </div>
+      <div class="answer-list">
+        <button class="answer-btn" data-answer="vm">Azure Virtual Machines</button>
+        <button class="answer-btn" data-answer="appservice">Azure App Service</button>
+        <button class="answer-btn" data-answer="vnet">Azure Virtual Network</button>
+        <button class="answer-btn" data-answer="files">Azure Files</button>
+      </div>
+      <div id="battleFeedback" class="feedback" aria-live="polite"></div>
+    </section>
+
+    <section id="masterStage" class="stage">
+      <div class="stage-heading"><p class="eyebrow">04 // MASTER</p><h2>Mission complete</h2><p>You learned the responsibility ladder, used it interactively, and solved an exam-style scenario.</p></div>
+      <div class="reward-card"><div class="reward-icon">★</div><div><h3>Cloud Concepts +1</h3><p id="rewardText">Your tech girl gained XP and moved closer to the next level.</p></div></div>
+      <button id="restartBtn" class="secondary-btn">REPLAY MISSION</button>
+    </section>
+
+    <footer>
+      <span>Content target: Microsoft AZ-900 skills measured as of July 20, 2026</span>
+      <a href="https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/az-900" target="_blank" rel="noreferrer">OFFICIAL STUDY GUIDE ↗</a>
+    </footer>
+  </main>
+  <script src="./app.js"></script>
+</body>
+</html>
