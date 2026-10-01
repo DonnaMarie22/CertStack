@@ -4,99 +4,242 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="CertStack — an 8-bit certification learning game." />
-  <title>CertStack</title>
+  <title>CertStack — AZ-900 Cloud Quest</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <main class="game-shell">
-    <header class="topbar">
-      <div><p class="eyebrow">CERTSTACK // AZ-900</p><h1>Cloud Quest</h1></div>
+    <header class="topbar pixel-panel">
+      <div>
+        <p class="eyebrow">CERTSTACK // AZ-900</p>
+        <h1>CLOUD QUEST</h1>
+        <p class="subhead">Module 1: Describe cloud computing</p>
+      </div>
       <div class="player-stats">
-        <span id="levelLabel">LVL 1</span>
+        <div class="stat-row"><span id="levelLabel">LVL 1</span><span id="questLabel">QUEST 1 / 4</span></div>
         <div class="xp-wrap"><div id="xpBar" class="xp-bar"></div></div>
         <span id="xpLabel">0 / 100 XP</span>
       </div>
     </header>
 
-    <section class="hero-panel">
+    <section class="hero-panel pixel-panel">
       <div class="avatar-card">
         <div class="pixel-girl" aria-label="8-bit Black tech girl with afro and black framed glasses">
           <div class="afro afro-1"></div><div class="afro afro-2"></div><div class="afro afro-3"></div>
           <div class="face"></div><div class="glasses left"></div><div class="glasses right"></div><div class="bridge"></div>
           <div class="body"></div><div class="laptop"></div>
         </div>
-        <div class="status-line"><span>●</span> ACTIVE LEARNER</div>
+        <div class="status-line">● ACTIVE LEARNER</div>
       </div>
       <div class="mission-card">
-        <p class="eyebrow">CURRENT MISSION</p>
-        <h2>IaaS vs PaaS vs SaaS</h2>
-        <p>Learn who manages what in the cloud, then survive the encounter.</p>
-        <div class="mission-meta"><span>☁ CLOUD CONCEPTS</span><span>+100 XP AVAILABLE</span></div>
+        <p class="eyebrow">LEARNING PATH</p>
+        <h2>Describe cloud computing</h2>
+        <p>Official Microsoft Learn concepts, rebuilt as interactive teaching quests.</p>
+        <div class="mission-meta">
+          <span>☁ CLOUD CONCEPTS</span>
+          <span>4 TEACHING QUESTS</span>
+          <span>+100 XP</span>
+        </div>
       </div>
     </section>
 
-    <section id="learnStage" class="stage active">
-      <div class="stage-heading">
-        <p class="eyebrow">01 // LEARN</p><h2>Who carries the stack?</h2>
-        <p>Move from IaaS → PaaS → SaaS and Microsoft manages more of the technical stack.</p>
+    <nav class="quest-map pixel-panel" aria-label="Quest map">
+      <button class="map-node active" data-map="cloud">1<br><span>WHAT IS CLOUD?</span></button>
+      <div class="map-line"></div>
+      <button class="map-node" data-map="shared" disabled>2<br><span>WHO OWNS WHAT?</span></button>
+      <div class="map-line"></div>
+      <button class="map-node" data-map="models" disabled>3<br><span>CLOUD MODELS</span></button>
+      <div class="map-line"></div>
+      <button class="map-node" data-map="cost" disabled>4<br><span>PAY FOR USE</span></button>
+    </nav>
+
+    <section id="cloud" class="quest active pixel-panel">
+      <div class="quest-copy">
+        <p class="eyebrow">QUEST 01 // WHAT IS CLOUD COMPUTING?</p>
+        <h2>Rent the computer. Skip the server room.</h2>
+        <p class="lead">Cloud computing means getting computing services over the internet instead of owning every piece of physical infrastructure yourself.</p>
       </div>
-      <div class="stack-grid">
-        <article class="stack-card">
-          <h3>IaaS</h3><p class="stack-sub">Infrastructure as a Service</p>
-          <div class="responsibility-list"><div class="you">YOU: apps, data, runtime, OS</div><div class="ms">MICROSOFT: hardware + datacenter</div></div>
-          <p class="example">Example: Azure Virtual Machines</p>
+
+      <div class="scene-grid">
+        <article class="scene-card">
+          <div class="scene-title">OLD SCHOOL DATACENTER</div>
+          <div class="server-room">
+            <div class="server">▦</div><div class="server">▦</div><div class="server">▦</div>
+          </div>
+          <p>Need more capacity? Buy hardware, install it, power it, cool it, maintain it.</p>
         </article>
-        <article class="stack-card">
-          <h3>PaaS</h3><p class="stack-sub">Platform as a Service</p>
-          <div class="responsibility-list"><div class="you">YOU: app + data</div><div class="ms">MICROSOFT: OS, runtime, servers</div></div>
-          <p class="example">Example: Azure App Service</p>
+
+        <div class="vs">VS</div>
+
+        <article class="scene-card cloud-scene">
+          <div class="scene-title">CLOUD</div>
+          <div class="cloud-pixel">☁</div>
+          <div class="service-row"><span>VM</span><span>DB</span><span>STORAGE</span><span>NETWORK</span></div>
+          <p>Request computing resources when you need them and release them when you do not.</p>
         </article>
-        <article class="stack-card">
-          <h3>SaaS</h3><p class="stack-sub">Software as a Service</p>
-          <div class="responsibility-list"><div class="you">YOU: use + configure access</div><div class="ms">MICROSOFT: application + platform</div></div>
-          <p class="example">Example: Microsoft 365</p>
+      </div>
+
+      <div class="teaching-note">
+        <strong>Microsoft's core idea:</strong> cloud services include virtual machines, storage, databases, networking, and more. The internet delivers access to those resources, so you can expand without first building another datacenter.
+      </div>
+
+      <div class="mini-quest">
+        <p class="eyebrow">TEACHING QUEST // SCALE THE LAUNCH</p>
+        <h3>Your shop expects a huge one-week traffic spike.</h3>
+        <p>Choose the move that best matches cloud computing.</p>
+        <div class="choice-grid">
+          <button class="choice-btn" data-cloud-answer="buy">Buy 20 physical servers now and keep them forever.</button>
+          <button class="choice-btn" data-cloud-answer="rent">Add cloud capacity for the launch, then scale it back down.</button>
+        </div>
+        <div id="cloudFeedback" class="feedback"></div>
+      </div>
+
+      <button id="cloudContinue" class="primary-btn hidden">UNLOCK QUEST 2 →</button>
+    </section>
+
+    <section id="shared" class="quest pixel-panel">
+      <div class="quest-copy">
+        <p class="eyebrow">QUEST 02 // SHARED RESPONSIBILITY</p>
+        <h2>Some jobs stay yours. Some move to the provider.</h2>
+        <p class="lead">The farther you move from your own datacenter, the more physical infrastructure responsibility shifts to the cloud provider.</p>
+      </div>
+
+      <div class="responsibility-board">
+        <div class="responsibility-column">
+          <h3>YOU ALWAYS OWN</h3>
+          <div class="responsibility-token fixed">YOUR DATA</div>
+          <div class="responsibility-token fixed">YOUR DEVICES</div>
+          <div class="responsibility-token fixed">YOUR ACCOUNTS & IDENTITIES</div>
+        </div>
+        <div class="responsibility-column provider">
+          <h3>PROVIDER ALWAYS OWNS</h3>
+          <div class="responsibility-token provider-token">PHYSICAL DATACENTER</div>
+          <div class="responsibility-token provider-token">PHYSICAL NETWORK</div>
+          <div class="responsibility-token provider-token">PHYSICAL HOSTS</div>
+        </div>
+      </div>
+
+      <div class="teaching-note">
+        Things like operating systems, applications, network controls, and parts of identity/access can shift depending on whether you use IaaS, PaaS, or SaaS.
+      </div>
+
+      <div class="mini-quest">
+        <p class="eyebrow">TEACHING QUEST // SORT THE JOB</p>
+        <h3>Who is responsible for the physical datacenter?</h3>
+        <div class="choice-grid">
+          <button class="choice-btn" data-shared-answer="you">YOU / CUSTOMER</button>
+          <button class="choice-btn" data-shared-answer="provider">CLOUD PROVIDER</button>
+        </div>
+        <div id="sharedFeedback" class="feedback"></div>
+      </div>
+
+      <button id="sharedContinue" class="primary-btn hidden">UNLOCK QUEST 3 →</button>
+    </section>
+
+    <section id="models" class="quest pixel-panel">
+      <div class="quest-copy">
+        <p class="eyebrow">QUEST 03 // CLOUD MODELS</p>
+        <h2>Where does your cloud live?</h2>
+        <p class="lead">Microsoft teaches three main deployment models: public, private, and hybrid.</p>
+      </div>
+
+      <div class="model-grid">
+        <article class="model-card">
+          <div class="model-icon">☁</div>
+          <h3>PUBLIC</h3>
+          <p>Third-party cloud provider. Resources are available to customers who purchase cloud services.</p>
+          <div class="tag">FAST TO SCALE</div>
+        </article>
+        <article class="model-card">
+          <div class="model-icon">▣</div>
+          <h3>PRIVATE</h3>
+          <p>Cloud environment dedicated to one organization. More control, but more cost and responsibility.</p>
+          <div class="tag">MORE CONTROL</div>
+        </article>
+        <article class="model-card">
+          <div class="model-icon">☁⇄▣</div>
+          <h3>HYBRID</h3>
+          <p>Public and private environments work together. You decide which workloads live where.</p>
+          <div class="tag">MOST FLEXIBLE</div>
         </article>
       </div>
-      <div class="pixel-chart">
-        <span>MORE YOU MANAGE</span>
-        <div class="chart-track"><div class="block">IaaS</div><div class="block">PaaS</div><div class="block">SaaS</div></div>
-        <span>MORE PROVIDER MANAGES</span>
+
+      <div class="mini-quest">
+        <p class="eyebrow">TEACHING QUEST // PLACE THE WORKLOAD</p>
+        <h3>Your company keeps sensitive legacy systems private but uses public cloud resources when demand spikes.</h3>
+        <div class="answer-list">
+          <button class="answer-btn" data-model-answer="public">Public cloud</button>
+          <button class="answer-btn" data-model-answer="private">Private cloud</button>
+          <button class="answer-btn" data-model-answer="hybrid">Hybrid cloud</button>
+        </div>
+        <div id="modelFeedback" class="feedback"></div>
       </div>
-      <button class="primary-btn" data-next="playStage">START INTERACTIVE</button>
+
+      <button id="modelsContinue" class="primary-btn hidden">UNLOCK QUEST 4 →</button>
     </section>
 
-    <section id="playStage" class="stage">
-      <div class="stage-heading"><p class="eyebrow">02 // PLAY</p><h2>Route the responsibility</h2><p>In IaaS, who patches the guest operating system?</p></div>
-      <div class="choice-grid">
-        <button class="choice-btn" data-play-answer="customer">YOU / CUSTOMER</button>
-        <button class="choice-btn" data-play-answer="provider">MICROSOFT / PROVIDER</button>
+    <section id="cost" class="quest pixel-panel">
+      <div class="quest-copy">
+        <p class="eyebrow">QUEST 04 // CONSUMPTION-BASED MODEL</p>
+        <h2>Buy the machine or pay for the use?</h2>
+        <p class="lead">Cloud computing shifts infrastructure spending toward paying for resources as you consume them.</p>
       </div>
-      <div id="playFeedback" class="feedback" aria-live="polite"></div>
+
+      <div class="cost-grid">
+        <article class="cost-card">
+          <div class="cost-icon">💰</div>
+          <h3>CAPEX</h3>
+          <p>Up-front spending on physical infrastructure such as servers, networking hardware, and datacenter space.</p>
+          <div class="cost-example">BUY IT</div>
+        </article>
+        <article class="cost-card">
+          <div class="cost-icon">⚡</div>
+          <h3>OPEX</h3>
+          <p>Ongoing spending on services over time. Cloud services are commonly treated as operational expense.</p>
+          <div class="cost-example">USE IT</div>
+        </article>
+      </div>
+
+      <div class="capacity-demo">
+        <div>
+          <h3>TRADITIONAL CAPACITY</h3>
+          <div class="capacity-track"><div class="fixed-capacity"></div><div class="demand demand-a"></div></div>
+          <p>Guess too high: wasted capacity. Guess too low: not enough.</p>
+        </div>
+        <div>
+          <h3>CLOUD CAPACITY</h3>
+          <div class="capacity-track"><div class="elastic-capacity"></div><div class="demand demand-b"></div></div>
+          <p>Add resources when demand rises. Release them when demand falls.</p>
+        </div>
+      </div>
+
+      <div class="mini-quest">
+        <p class="eyebrow">TEACHING QUEST // PICK THE SPENDING MODEL</p>
+        <h3>You pay monthly for only the compute and storage you actually consume.</h3>
+        <div class="choice-grid">
+          <button class="choice-btn" data-cost-answer="capex">CAPEX</button>
+          <button class="choice-btn" data-cost-answer="opex">OPEX / CONSUMPTION</button>
+        </div>
+        <div id="costFeedback" class="feedback"></div>
+      </div>
+
+      <button id="finishBtn" class="primary-btn hidden">COMPLETE MODULE ★</button>
     </section>
 
-    <section id="battleStage" class="stage">
-      <div class="stage-heading">
-        <p class="eyebrow">03 // BATTLE</p><h2>Scenario encounter</h2>
-        <p>A developer wants to deploy a web application without managing the operating system or underlying server infrastructure. Which option fits best?</p>
+    <section id="complete" class="quest pixel-panel">
+      <div class="completion">
+        <div class="reward-star">★</div>
+        <p class="eyebrow">MODULE COMPLETE</p>
+        <h2>Describe cloud computing</h2>
+        <p>You just learned the first official AZ-900 cloud-computing concepts by doing them instead of reading a wall of text.</p>
+        <div class="completion-badges"><span>WHAT IS CLOUD</span><span>SHARED RESPONSIBILITY</span><span>CLOUD MODELS</span><span>CONSUMPTION</span></div>
+        <button id="replayBtn" class="secondary-btn">REPLAY MODULE</button>
       </div>
-      <div class="answer-list">
-        <button class="answer-btn" data-answer="vm">Azure Virtual Machines</button>
-        <button class="answer-btn" data-answer="appservice">Azure App Service</button>
-        <button class="answer-btn" data-answer="vnet">Azure Virtual Network</button>
-        <button class="answer-btn" data-answer="files">Azure Files</button>
-      </div>
-      <div id="battleFeedback" class="feedback" aria-live="polite"></div>
     </section>
 
-    <section id="masterStage" class="stage">
-      <div class="stage-heading"><p class="eyebrow">04 // MASTER</p><h2>Mission complete</h2><p>You learned the responsibility ladder, used it interactively, and solved an exam-style scenario.</p></div>
-      <div class="reward-card"><div class="reward-icon">★</div><div><h3>Cloud Concepts +1</h3><p id="rewardText">Your tech girl gained XP and moved closer to the next level.</p></div></div>
-      <button id="restartBtn" class="secondary-btn">REPLAY MISSION</button>
-    </section>
-
-    <footer>
-      <span>Content target: Microsoft AZ-900 skills measured as of July 20, 2026</span>
-      <a href="https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/az-900" target="_blank" rel="noreferrer">OFFICIAL STUDY GUIDE ↗</a>
+    <footer class="pixel-panel">
+      <span>Source curriculum: Microsoft Learn — Describe cloud computing</span>
+      <a href="https://learn.microsoft.com/en-us/training/modules/describe-cloud-compute/" target="_blank" rel="noreferrer">OFFICIAL MODULE ↗</a>
     </footer>
   </main>
   <script src="./app.js"></script>
