@@ -91,3 +91,6 @@ footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;backgr
   font-weight:700;
   letter-spacing:1px
 }
+
+.task-chip:hover .service-tooltip,
+.task-chip:focus .service-tooltip{display:block}
