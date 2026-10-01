@@ -67,3 +67,6 @@ footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;backgr
 @media(max-width:800px){
   .service-tooltip{position:fixed;left:5vw;right:5vw;bottom:20px;width:auto;transform:none}
 }
+
+.service-chip.open .service-tooltip,
+.task-chip.open .service-tooltip{display:block}
