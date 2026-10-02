@@ -1,7 +1,33 @@
+const STORAGE_KEY="certstack-progress-v1";
+
+function loadProgress(){
+  const legacyXp=Number(localStorage.getItem("certstack-xp")||0);
+  const fallback={
+    xp:legacyXp,
+    level:Number(localStorage.getItem("certstack-level")||1),
+    completedQuests:[],
+    completedModules:[],
+    unlockedModules:legacyXp>=100?[1,2]:[1],
+    activeModule:legacyXp>=100?2:1,
+    activeQuest:"cloud"
+  };
+  try{
+    const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));
+    return saved?{...fallback,...saved}:fallback;
+  }catch{
+    return fallback;
+  }
+}
+
+const saved=loadProgress();
 const state={
-  xp:Number(localStorage.getItem("certstack-xp")||0),
-  level:Number(localStorage.getItem("certstack-level")||1),
-  completed:new Set()
+  xp:Number(saved.xp||0),
+  level:Number(saved.level||1),
+  completed:new Set(saved.completedQuests||[]),
+  completedModules:new Set(saved.completedModules||[]),
+  unlockedModules:new Set(saved.unlockedModules||[1]),
+  activeModule:Number(saved.activeModule||1),
+  activeQuest:saved.activeQuest||"cloud"
 };
 
 const quests=["cloud","shared","models","cost"];
@@ -10,30 +36,79 @@ const xpBar=document.getElementById("xpBar");
 const xpLabel=document.getElementById("xpLabel");
 const levelLabel=document.getElementById("levelLabel");
 
+function saveProgress(){
+  localStorage.setItem(STORAGE_KEY,JSON.stringify({
+    xp:state.xp,
+    level:state.level,
+    completedQuests:[...state.completed],
+    completedModules:[...state.completedModules],
+    unlockedModules:[...state.unlockedModules],
+    activeModule:state.activeModule,
+    activeQuest:state.activeQuest
+  }));
+  // Keep legacy keys for compatibility with the existing build.
+  localStorage.setItem("certstack-xp",state.xp);
+  localStorage.setItem("certstack-level",state.level);
+}
+
 function renderStats(){
   const into=state.xp%100;
   levelLabel.textContent="LVL "+state.level;
   xpLabel.textContent=into+" / 100 XP";
   xpBar.style.width=into+"%";
 }
+
 function addXp(amount){
   state.xp+=amount;
   state.level=Math.floor(state.xp/100)+1;
-  localStorage.setItem("certstack-xp",state.xp);
-  localStorage.setItem("certstack-level",state.level);
+  saveProgress();
   renderStats();
 }
-function showQuest(id){
-  document.querySelectorAll(".quest").forEach(q=>q.classList.toggle("active",q.id===id));
+
+function questUnlocked(index){
+  if(index===0) return true;
+  return state.completed.has(quests[index-1]);
+}
+
+function restoreQuestControls(){
+  const config=[
+    ["cloud","cloudContinue","UNLOCK QUEST 2 →"],
+    ["shared","sharedContinue","UNLOCK QUEST 3 →"],
+    ["models","modelsContinue","UNLOCK QUEST 4 →"],
+    ["cost","finishBtn","COMPLETE MODULE ★"]
+  ];
+  config.forEach(([quest,id,label])=>{
+    if(!state.completed.has(quest)) return;
+    const button=document.getElementById(id);
+    if(button){
+      button.disabled=false;
+      button.classList.remove("locked-btn");
+      button.textContent=label;
+    }
+  });
+}
+
+function showQuest(id,{scroll=true}={}){
+  if(id!=="complete"){
+    const idx=quests.indexOf(id);
+    if(idx<0 || !questUnlocked(idx)) return;
+    state.activeQuest=id;
+  }
+  document.querySelectorAll("#module1 > .quest").forEach(q=>q.classList.toggle("active",q.id===id));
   const idx=quests.indexOf(id);
   questLabel.textContent=id==="complete"?"MODULE COMPLETE":"QUEST "+(idx+1)+" / 4";
-  document.querySelectorAll(".map-node").forEach((n,i)=>{
-    n.classList.toggle("active",i===idx);
-    n.classList.toggle("done",i<idx || state.completed.has(quests[i]));
-    if(i<=idx)n.disabled=false;
+
+  document.querySelectorAll("#module1 .quest-map .map-node").forEach((node,i)=>{
+    const unlocked=questUnlocked(i);
+    node.disabled=!unlocked;
+    node.classList.toggle("active",i===idx);
+    node.classList.toggle("done",state.completed.has(quests[i]));
   });
-  window.scrollTo({top:0,behavior:"smooth"});
+
+  saveProgress();
+  if(scroll) window.scrollTo({top:0,behavior:"smooth"});
 }
+
 function success(feedback,message,button,quest,xp){
   if(!state.completed.has(quest)){
     state.completed.add(quest);
@@ -50,10 +125,65 @@ function success(feedback,message,button,quest,xp){
     finishBtn:"COMPLETE MODULE ★"
   };
   if(labels[button.id]) button.textContent=labels[button.id];
+  saveProgress();
+  renderRoadmap();
 }
+
 function fail(feedback,message){
   feedback.className="feedback bad";
   feedback.textContent=message;
+}
+
+function completeModule(moduleNumber){
+  state.completedModules.add(moduleNumber);
+  const next=moduleNumber+1;
+  if(next<=12) state.unlockedModules.add(next);
+  saveProgress();
+  renderRoadmap();
+}
+
+function renderRoadmap(){
+  document.querySelectorAll(".module-card[data-module-number]").forEach(card=>{
+    const number=Number(card.dataset.moduleNumber);
+    const completed=state.completedModules.has(number);
+    const unlocked=state.unlockedModules.has(number);
+    const hasScreen=Boolean(document.getElementById("module"+number));
+    const small=card.querySelector("small");
+
+    card.classList.toggle("completed-module",completed);
+    card.classList.toggle("unlocked-module",unlocked && !completed);
+    card.classList.toggle("locked-module",!unlocked);
+    card.classList.toggle("active-module",state.activeModule===number);
+
+    // Only built module screens can be opened right now.
+    card.disabled=!unlocked || !hasScreen;
+
+    if(small){
+      if(completed) small.textContent="COMPLETED // REPLAY";
+      else if(unlocked && hasScreen) small.textContent=number===1?"IN PROGRESS":"UNLOCKED";
+      else if(unlocked && !hasScreen) small.textContent="UNLOCKED // COMING SOON";
+      else small.textContent="LOCKED";
+    }
+  });
+
+  const progress=document.querySelector(".roadmap-progress strong");
+  if(progress) progress.textContent="MODULE "+state.activeModule+" OF 12";
+}
+
+function showModule(moduleId,{scroll=true}={}){
+  const number=Number(moduleId.replace("module",""));
+  if(!state.unlockedModules.has(number)) return;
+  const target=document.getElementById(moduleId);
+  if(!target) return;
+
+  state.activeModule=number;
+  document.querySelectorAll(".module-screen").forEach(screen=>{
+    screen.classList.toggle("active-module-screen",screen.id===moduleId);
+  });
+
+  renderRoadmap();
+  saveProgress();
+  if(scroll) window.scrollTo({top:0,behavior:"smooth"});
 }
 
 document.querySelectorAll("[data-cloud-answer]").forEach(btn=>btn.addEventListener("click",()=>{
@@ -87,30 +217,28 @@ document.querySelectorAll("[data-cost-answer]").forEach(btn=>btn.addEventListene
   }else fail(f,"CapEx is the up-front purchase of physical infrastructure. Paying as you consume cloud services is OpEx.");
 }));
 
-document.getElementById("finishBtn").addEventListener("click",()=>showQuest("complete"));
+document.getElementById("finishBtn").addEventListener("click",()=>{
+  completeModule(1);
+  showQuest("complete");
+});
+
+const continueToModule2=document.getElementById("continueToModule2");
+if(continueToModule2) continueToModule2.addEventListener("click",()=>showModule("module2"));
+
 document.getElementById("replayBtn").addEventListener("click",()=>showQuest("cloud"));
-document.querySelectorAll(".map-node").forEach((btn,i)=>btn.addEventListener("click",()=>{if(!btn.disabled)showQuest(quests[i]);}));
-renderStats();
 
+document.querySelectorAll("#module1 .quest-map .map-node").forEach((btn,i)=>{
+  btn.addEventListener("click",()=>showQuest(quests[i]));
+});
 
-function showModule(moduleId){
-  document.querySelectorAll(".module-screen").forEach((screen)=>{
-    screen.classList.toggle("active-module-screen",screen.id===moduleId);
-  });
-  const activeCard=document.querySelector('[data-module-jump="'+moduleId+'"]');
-  if(activeCard){
-    document.querySelectorAll(".module-card").forEach(c=>c.classList.remove("active-module"));
-    activeCard.classList.add("active-module");
-  }
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-document.querySelectorAll("[data-module-jump]").forEach((btn)=>{
+document.querySelectorAll(".module-card[data-module-jump]").forEach(btn=>{
   btn.addEventListener("click",()=>showModule(btn.dataset.moduleJump));
 });
+
 const backToModule1=document.getElementById("backToModule1");
 if(backToModule1) backToModule1.addEventListener("click",()=>showModule("module1"));
 
-document.querySelectorAll("[data-m2-answer]").forEach((btn)=>{
+document.querySelectorAll("[data-m2-answer]").forEach(btn=>{
   btn.addEventListener("click",()=>{
     const feedback=document.getElementById("m2Feedback");
     if(btn.dataset.m2Answer==="scalability"){
@@ -122,3 +250,13 @@ document.querySelectorAll("[data-m2-answer]").forEach((btn)=>{
     }
   });
 });
+
+// Restore each visitor's saved local progress.
+restoreQuestControls();
+renderStats();
+renderRoadmap();
+showModule("module"+state.activeModule,{scroll:false});
+if(state.activeModule===1){
+  if(state.completedModules.has(1)) showQuest("complete",{scroll:false});
+  else showQuest(state.activeQuest,{scroll:false});
+}
