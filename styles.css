@@ -325,3 +325,69 @@ footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;backgr
 @media(max-width:800px){
   .gap-split{grid-template-columns:1fr}
 }
+
+/* Generated Modules 2-12 */
+.concept-stack{
+  background:#0b1424;
+  border:4px solid #000;
+  padding:18px;
+  margin:18px 0 24px
+}
+.concept-stack ul{margin:0;padding-left:22px;display:grid;gap:12px}
+.concept-stack li{line-height:1.55}
+.generated-quest-map .map-node{min-width:155px}
+.module-assessment .assessment-list{display:grid;gap:18px;margin:22px 0}
+.assessment-question{
+  background:#0b1424;
+  border:4px solid #000;
+  padding:18px
+}
+.assessment-question h3{font-size:15px;line-height:1.45}
+.test-answer.selected-answer{
+  background:var(--cyan);
+  color:#071018;
+  outline:4px solid var(--yellow)
+}
+.module-complete-panel .completion{
+  max-width:760px;
+  margin:0 auto
+}
+.module-complete-panel .primary-btn,
+.module-complete-panel .secondary-btn{
+  margin:8px
+}
+.module-source{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+  background:#070b14;
+  padding:14px 16px;
+  margin-bottom:22px;
+  font-size:11px;
+  color:var(--muted)
+}
+.module-source a{color:var(--cyan)}
+.generated-module .term-chip{
+  position:relative;
+  display:inline-block;
+  color:var(--cyan);
+  font-weight:700;
+  border-bottom:2px dotted var(--cyan);
+  cursor:help
+}
+.generated-module .term-chip:hover .service-tooltip,
+.generated-module .term-chip:focus-visible .service-tooltip{
+  display:block
+}
+.generated-module .term-chip:not(:hover):not(:focus-visible) .service-tooltip{
+  display:none
+}
+.service-chip:not(:hover):not(:focus-visible) .service-tooltip,
+.task-chip:not(:hover):not(:focus-visible) .service-tooltip{
+  display:none
+}
+@media(max-width:800px){
+  .generated-quest-map .map-node{min-width:135px}
+  .module-source{flex-direction:column}
+}
