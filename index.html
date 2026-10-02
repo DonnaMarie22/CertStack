@@ -43,6 +43,47 @@
       </div>
     </section>
 
+    <section class="module-roadmap pixel-panel" aria-label="AZ-900 module roadmap">
+      <div class="roadmap-head">
+        <div>
+          <p class="eyebrow">AZ-900 COURSE MAP</p>
+          <h2>12 CORE MODULES</h2>
+        </div>
+        <div class="roadmap-progress"><strong>MODULE 1 OF 12</strong><span>World 1 // Cloud Concepts</span></div>
+      </div>
+
+      <div class="world-block">
+        <div class="world-title">WORLD 1 // CLOUD CONCEPTS</div>
+        <div class="module-grid">
+          <button class="module-card active-module" data-module-jump="module1"><span>01</span><strong>Describe cloud computing</strong><small>IN PROGRESS</small></button>
+          <button class="module-card next-module" data-module-jump="module2"><span>02</span><strong>Benefits of cloud services</strong><small>PREVIEW READY</small></button>
+          <button class="module-card locked-module" disabled><span>03</span><strong>Cloud service types</strong><small>LOCKED</small></button>
+        </div>
+      </div>
+
+      <div class="world-block">
+        <div class="world-title">WORLD 2 // AZURE ARCHITECTURE & SERVICES</div>
+        <div class="module-grid">
+          <button class="module-card locked-module" disabled><span>04</span><strong>Core architectural components</strong><small>LOCKED</small></button>
+          <button class="module-card locked-module" disabled><span>05</span><strong>Azure compute services</strong><small>LOCKED</small></button>
+          <button class="module-card locked-module" disabled><span>06</span><strong>Azure networking services</strong><small>LOCKED</small></button>
+          <button class="module-card locked-module" disabled><span>07</span><strong>Azure storage services</strong><small>LOCKED</small></button>
+          <button class="module-card locked-module" disabled><span>08</span><strong>Identity, access & security</strong><small>LOCKED</small></button>
+        </div>
+      </div>
+
+      <div class="world-block">
+        <div class="world-title">WORLD 3 // MANAGEMENT & GOVERNANCE</div>
+        <div class="module-grid">
+          <button class="module-card locked-module" disabled><span>09</span><strong>Cost management</strong><small>LOCKED</small></button>
+          <button class="module-card locked-module" disabled><span>10</span><strong>Governance & compliance</strong><small>LOCKED</small></button>
+          <button class="module-card locked-module" disabled><span>11</span><strong>Manage & deploy resources</strong><small>LOCKED</small></button>
+          <button class="module-card locked-module" disabled><span>12</span><strong>Monitoring tools</strong><small>LOCKED</small></button>
+        </div>
+      </div>
+    </section>
+
+    <div id="module1" class="module-screen active-module-screen">
     <nav class="quest-map pixel-panel" aria-label="Quest map">
       <button class="map-node active" data-map="cloud">1<br><span>WHAT IS CLOUD?</span></button>
       <div class="map-line"></div>
@@ -278,6 +319,91 @@
         <button id="replayBtn" class="secondary-btn">REPLAY MODULE</button>
       </div>
     </section>
+
+    </div>
+
+    <div id="module2" class="module-screen">
+      <section class="module2-hero pixel-panel">
+        <div>
+          <p class="eyebrow">MODULE 2 OF 12 // WORLD 1</p>
+          <h2>Benefits of using cloud services</h2>
+          <p class="lead">Microsoft Learn teaches five benefit groups here. We’ll turn each one into a teaching quest before any exam-style testing.</p>
+        </div>
+        <div class="module2-meta"><span>OFFICIAL MODULE: 19 MIN</span><span>5 TEACHING QUESTS</span><span>900 MS LEARN XP</span></div>
+      </section>
+
+      <nav class="quest-map pixel-panel" aria-label="Module 2 quest map">
+        <button class="map-node active">1<br><span>AVAILABILITY + SCALE</span></button>
+        <div class="map-line"></div>
+        <button class="map-node">2<br><span>RELIABILITY + PREDICTABILITY</span></button>
+        <div class="map-line"></div>
+        <button class="map-node">3<br><span>SECURITY + GOVERNANCE</span></button>
+        <div class="map-line"></div>
+        <button class="map-node">4<br><span>MANAGEABILITY</span></button>
+        <div class="map-line"></div>
+        <button class="map-node">5<br><span>SUSTAINABILITY</span></button>
+      </nav>
+
+      <section class="quest pixel-panel module2-quest-preview">
+        <div class="quest-copy">
+          <p class="eyebrow">QUEST 01 // HIGH AVAILABILITY + SCALABILITY</p>
+          <h2>Stay up. Grow when demand grows.</h2>
+          <p class="lead">Two different cloud benefits solve two different problems: <span class="term-chip" tabindex="0">availability<span class="service-tooltip"><strong>Availability</strong><br>How often a service is up and usable when people need it.</span></span> keeps a service accessible, while <span class="term-chip" tabindex="0">scalability<span class="service-tooltip"><strong>Scalability</strong><br>The ability to add or remove resources so a system can handle changing demand.</span></span> changes capacity.</p>
+        </div>
+
+        <div class="benefit-compare">
+          <article class="benefit-card">
+            <div class="benefit-icon">♥</div>
+            <h3>HIGH AVAILABILITY</h3>
+            <p><strong>Problem:</strong> “What if something fails?”</p>
+            <p><strong>Goal:</strong> Keep the service running and reachable.</p>
+            <div class="plain-box">Think: <strong>STAY ONLINE.</strong></div>
+          </article>
+          <article class="benefit-card">
+            <div class="benefit-icon">↕</div>
+            <h3>SCALABILITY</h3>
+            <p><strong>Problem:</strong> “What if demand changes?”</p>
+            <p><strong>Goal:</strong> Increase or decrease resources to match the workload.</p>
+            <div class="plain-box">Think: <strong>CHANGE SIZE.</strong></div>
+          </article>
+        </div>
+
+        <div class="scale-types">
+          <div class="scale-card">
+            <h3>VERTICAL SCALING</h3>
+            <div class="scale-visual"><span>SMALL VM</span><span>→</span><span class="big-box">BIGGER VM</span></div>
+            <p>Give one machine more power, such as more CPU or memory.</p>
+          </div>
+          <div class="scale-card">
+            <h3>HORIZONTAL SCALING</h3>
+            <div class="scale-visual"><span>VM</span><span>→</span><span>VM + VM + VM</span></div>
+            <p>Add more machines or instances to share the work.</p>
+          </div>
+        </div>
+
+        <div class="mini-quest">
+          <p class="eyebrow">TEACHING QUEST // NAME THE BENEFIT</p>
+          <h3>Your app is healthy, but a sale brings 10× more users. You add more instances so the app can handle the traffic.</h3>
+          <div class="choice-grid">
+            <button class="choice-btn" data-m2-answer="availability">High availability</button>
+            <button class="choice-btn" data-m2-answer="scalability">Scalability</button>
+          </div>
+          <div id="m2Feedback" class="feedback" aria-live="polite"></div>
+        </div>
+
+        <div class="module2-next-look">
+          <p class="eyebrow">COMING NEXT IN MODULE 2</p>
+          <div class="preview-grid">
+            <div><strong>02 Reliability + Predictability</strong><span>Recover from failure and know what to expect from performance/cost.</span></div>
+            <div><strong>03 Security + Governance</strong><span>Cloud tools can help enforce standards, controls, and security policies.</span></div>
+            <div><strong>04 Manageability</strong><span>Manage resources through portals, command-line tools, APIs, and automation.</span></div>
+            <div><strong>05 Sustainability</strong><span>Microsoft Learn also covers sustainability considerations and benefits in cloud environments.</span></div>
+          </div>
+        </div>
+
+        <button id="backToModule1" class="secondary-btn">← BACK TO MODULE 1</button>
+      </section>
+    </div>
 
     <footer class="pixel-panel">
       <span>Source curriculum: Microsoft Learn — Describe cloud computing</span>
