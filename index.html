@@ -55,30 +55,30 @@
       <div class="world-block">
         <div class="world-title">WORLD 1 // CLOUD CONCEPTS</div>
         <div class="module-grid">
-          <button class="module-card active-module" data-module-jump="module1"><span>01</span><strong>Describe cloud computing</strong><small>IN PROGRESS</small></button>
-          <button class="module-card next-module" data-module-jump="module2"><span>02</span><strong>Benefits of cloud services</strong><small>PREVIEW READY</small></button>
-          <button class="module-card locked-module" disabled><span>03</span><strong>Cloud service types</strong><small>LOCKED</small></button>
+          <button class="module-card active-module" data-module-jump="module1" data-module-number="1"><span>01</span><strong>Describe cloud computing</strong><small>IN PROGRESS</small></button>
+          <button class="module-card locked-module" data-module-jump="module2" data-module-number="2" disabled><span>02</span><strong>Benefits of cloud services</strong><small>LOCKED // PASS MODULE 1</small></button>
+          <button class="module-card locked-module" data-module-number="3" disabled><span>03</span><strong>Cloud service types</strong><small>LOCKED</small></button>
         </div>
       </div>
 
       <div class="world-block">
         <div class="world-title">WORLD 2 // AZURE ARCHITECTURE & SERVICES</div>
         <div class="module-grid">
-          <button class="module-card locked-module" disabled><span>04</span><strong>Core architectural components</strong><small>LOCKED</small></button>
-          <button class="module-card locked-module" disabled><span>05</span><strong>Azure compute services</strong><small>LOCKED</small></button>
-          <button class="module-card locked-module" disabled><span>06</span><strong>Azure networking services</strong><small>LOCKED</small></button>
-          <button class="module-card locked-module" disabled><span>07</span><strong>Azure storage services</strong><small>LOCKED</small></button>
-          <button class="module-card locked-module" disabled><span>08</span><strong>Identity, access & security</strong><small>LOCKED</small></button>
+          <button class="module-card locked-module" data-module-number="4" disabled><span>04</span><strong>Core architectural components</strong><small>LOCKED</small></button>
+          <button class="module-card locked-module" data-module-number="5" disabled><span>05</span><strong>Azure compute services</strong><small>LOCKED</small></button>
+          <button class="module-card locked-module" data-module-number="6" disabled><span>06</span><strong>Azure networking services</strong><small>LOCKED</small></button>
+          <button class="module-card locked-module" data-module-number="7" disabled><span>07</span><strong>Azure storage services</strong><small>LOCKED</small></button>
+          <button class="module-card locked-module" data-module-number="8" disabled><span>08</span><strong>Identity, access & security</strong><small>LOCKED</small></button>
         </div>
       </div>
 
       <div class="world-block">
         <div class="world-title">WORLD 3 // MANAGEMENT & GOVERNANCE</div>
         <div class="module-grid">
-          <button class="module-card locked-module" disabled><span>09</span><strong>Cost management</strong><small>LOCKED</small></button>
-          <button class="module-card locked-module" disabled><span>10</span><strong>Governance & compliance</strong><small>LOCKED</small></button>
-          <button class="module-card locked-module" disabled><span>11</span><strong>Manage & deploy resources</strong><small>LOCKED</small></button>
-          <button class="module-card locked-module" disabled><span>12</span><strong>Monitoring tools</strong><small>LOCKED</small></button>
+          <button class="module-card locked-module" data-module-number="9" disabled><span>09</span><strong>Cost management</strong><small>LOCKED</small></button>
+          <button class="module-card locked-module" data-module-number="10" disabled><span>10</span><strong>Governance & compliance</strong><small>LOCKED</small></button>
+          <button class="module-card locked-module" data-module-number="11" disabled><span>11</span><strong>Manage & deploy resources</strong><small>LOCKED</small></button>
+          <button class="module-card locked-module" data-module-number="12" disabled><span>12</span><strong>Monitoring tools</strong><small>LOCKED</small></button>
         </div>
       </div>
     </section>
@@ -316,6 +316,7 @@
         <h2>Describe cloud computing</h2>
         <p>You just learned the first official AZ-900 cloud-computing concepts by doing them instead of reading a wall of text.</p>
         <div class="completion-badges"><span>WHAT IS CLOUD</span><span>SHARED RESPONSIBILITY</span><span>CLOUD MODELS</span><span>CONSUMPTION</span></div>
+        <button id="continueToModule2" class="primary-btn">CONTINUE TO MODULE 2 →</button>
         <button id="replayBtn" class="secondary-btn">REPLAY MODULE</button>
       </div>
     </section>
@@ -344,7 +345,7 @@
         <button class="map-node">5<br><span>SUSTAINABILITY</span></button>
       </nav>
 
-      <section class="quest pixel-panel module2-quest-preview">
+      <section class="quest active pixel-panel module2-quest-preview">
         <div class="quest-copy">
           <p class="eyebrow">QUEST 01 // HIGH AVAILABILITY + SCALABILITY</p>
           <h2>Stay up. Grow when demand grows.</h2>
