@@ -92,3 +92,33 @@ document.getElementById("replayBtn").addEventListener("click",()=>showQuest("clo
 document.querySelectorAll(".map-node").forEach((btn,i)=>btn.addEventListener("click",()=>{if(!btn.disabled)showQuest(quests[i]);}));
 renderStats();
 
+
+function showModule(moduleId){
+  document.querySelectorAll(".module-screen").forEach((screen)=>{
+    screen.classList.toggle("active-module-screen",screen.id===moduleId);
+  });
+  const activeCard=document.querySelector('[data-module-jump="'+moduleId+'"]');
+  if(activeCard){
+    document.querySelectorAll(".module-card").forEach(c=>c.classList.remove("active-module"));
+    activeCard.classList.add("active-module");
+  }
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll("[data-module-jump]").forEach((btn)=>{
+  btn.addEventListener("click",()=>showModule(btn.dataset.moduleJump));
+});
+const backToModule1=document.getElementById("backToModule1");
+if(backToModule1) backToModule1.addEventListener("click",()=>showModule("module1"));
+
+document.querySelectorAll("[data-m2-answer]").forEach((btn)=>{
+  btn.addEventListener("click",()=>{
+    const feedback=document.getElementById("m2Feedback");
+    if(btn.dataset.m2Answer==="scalability"){
+      feedback.className="feedback good";
+      feedback.textContent="YES — this is scalability. The service is already available; the problem is handling more demand, so you add capacity.";
+    }else{
+      feedback.className="feedback bad";
+      feedback.textContent="Close, but availability is about staying up and reachable. Here the app is healthy; it just needs more capacity for increased demand.";
+    }
+  });
+});
