@@ -260,3 +260,218 @@ if(state.activeModule===1){
   if(state.completedModules.has(1)) showQuest("complete",{scroll:false});
   else showQuest(state.activeQuest,{scroll:false});
 }
+
+
+// ---------------- GENERATED MODULES 2-12 ----------------
+function generatedQuestKey(moduleNumber,index){
+  return "m"+moduleNumber+"q"+index;
+}
+function generatedTestKey(moduleNumber){
+  return "m"+moduleNumber+"test";
+}
+function generatedModuleData(moduleNumber){
+  return window.moduleCatalog ? window.moduleCatalog[moduleNumber] : moduleCatalog[moduleNumber];
+}
+function allGeneratedQuestsComplete(moduleNumber){
+  const data=generatedModuleData(moduleNumber);
+  return data.quests.every((_,i)=>state.completed.has(generatedQuestKey(moduleNumber,i)));
+}
+function updateGeneratedMap(moduleNumber,activeKind,activeIndex=0){
+  const screen=document.getElementById("module"+moduleNumber);
+  if(!screen) return;
+  const nodes=[...screen.querySelectorAll("[data-gmap]")];
+  nodes.forEach((node,i)=>{
+    const unlocked=i===0 || state.completed.has(generatedQuestKey(moduleNumber,i-1));
+    node.disabled=!unlocked;
+    node.classList.toggle("done",state.completed.has(generatedQuestKey(moduleNumber,i)));
+    node.classList.toggle("active",activeKind==="quest" && i===activeIndex);
+  });
+  const testNode=screen.querySelector(".assessment-node");
+  if(testNode){
+    const testUnlocked=allGeneratedQuestsComplete(moduleNumber);
+    testNode.disabled=!testUnlocked;
+    testNode.classList.toggle("done",state.completedModules.has(moduleNumber));
+    testNode.classList.toggle("active",activeKind==="assessment");
+  }
+}
+function showGeneratedQuest(moduleNumber,index,{scroll=true}={}){
+  const screen=document.getElementById("module"+moduleNumber);
+  if(!screen) return;
+  if(index>0 && !state.completed.has(generatedQuestKey(moduleNumber,index-1))) return;
+
+  screen.querySelectorAll(".generated-quest,.module-assessment,.module-complete-panel").forEach(el=>el.classList.remove("active"));
+  const target=screen.querySelector('[data-gquest="'+index+'"]');
+  if(!target) return;
+  target.classList.add("active");
+  localStorage.setItem("certstack-module-"+moduleNumber+"-position","q"+index);
+  updateGeneratedMap(moduleNumber,"quest",index);
+  const data=generatedModuleData(moduleNumber);
+  questLabel.textContent="QUEST "+(index+1)+" / "+data.quests.length;
+  const sub=document.querySelector(".subhead");
+  if(sub) sub.textContent="Module "+moduleNumber+": "+data.title;
+  if(scroll) window.scrollTo({top:0,behavior:"smooth"});
+}
+function showGeneratedAssessment(moduleNumber,{scroll=true}={}){
+  if(!allGeneratedQuestsComplete(moduleNumber)) return;
+  const screen=document.getElementById("module"+moduleNumber);
+  screen.querySelectorAll(".generated-quest,.module-assessment,.module-complete-panel").forEach(el=>el.classList.remove("active"));
+  const target=screen.querySelector(".module-assessment");
+  target.classList.add("active");
+  localStorage.setItem("certstack-module-"+moduleNumber+"-position","test");
+  updateGeneratedMap(moduleNumber,"assessment");
+  questLabel.textContent="MODULE TEST";
+  if(scroll) window.scrollTo({top:0,behavior:"smooth"});
+}
+function showGeneratedComplete(moduleNumber,{scroll=true}={}){
+  const screen=document.getElementById("module"+moduleNumber);
+  screen.querySelectorAll(".generated-quest,.module-assessment,.module-complete-panel").forEach(el=>el.classList.remove("active"));
+  const target=screen.querySelector(".module-complete-panel");
+  target.classList.add("active");
+  localStorage.setItem("certstack-module-"+moduleNumber+"-position","complete");
+  updateGeneratedMap(moduleNumber,"complete");
+  questLabel.textContent="MODULE COMPLETE";
+  if(scroll) window.scrollTo({top:0,behavior:"smooth"});
+}
+function restoreGeneratedModule(moduleNumber){
+  if(state.completedModules.has(moduleNumber)){
+    showGeneratedComplete(moduleNumber,{scroll:false});
+    return;
+  }
+  const savedPos=localStorage.getItem("certstack-module-"+moduleNumber+"-position");
+  if(savedPos==="test" && allGeneratedQuestsComplete(moduleNumber)){
+    showGeneratedAssessment(moduleNumber,{scroll:false});
+    return;
+  }
+  if(savedPos && /^q\d+$/.test(savedPos)){
+    const idx=Number(savedPos.slice(1));
+    const valid=idx===0 || state.completed.has(generatedQuestKey(moduleNumber,idx-1));
+    if(valid){showGeneratedQuest(moduleNumber,idx,{scroll:false});return;}
+  }
+  const data=generatedModuleData(moduleNumber);
+  const firstIncomplete=data.quests.findIndex((_,i)=>!state.completed.has(generatedQuestKey(moduleNumber,i)));
+  if(firstIncomplete===-1) showGeneratedAssessment(moduleNumber,{scroll:false});
+  else showGeneratedQuest(moduleNumber,firstIncomplete,{scroll:false});
+}
+function unlockGenericNextButton(moduleNumber,index){
+  const screen=document.getElementById("module"+moduleNumber);
+  const quest=screen.querySelector('[data-gquest="'+index+'"]');
+  const button=quest?.querySelector(".generic-next");
+  if(!button) return;
+  button.disabled=false;
+  button.classList.remove("locked-btn");
+  const data=generatedModuleData(moduleNumber);
+  button.textContent=index===data.quests.length-1?"UNLOCK MODULE TEST →":"UNLOCK QUEST "+(index+2)+" →";
+}
+
+document.querySelectorAll(".generated-module").forEach(screen=>{
+  const moduleNumber=Number(screen.dataset.module);
+  const data=generatedModuleData(moduleNumber);
+
+  // Restore buttons for quests already completed in this browser.
+  data.quests.forEach((_,i)=>{
+    if(state.completed.has(generatedQuestKey(moduleNumber,i))) unlockGenericNextButton(moduleNumber,i);
+  });
+
+  screen.querySelectorAll(".generated-quest").forEach(questEl=>{
+    const index=Number(questEl.dataset.gquest);
+    questEl.querySelectorAll(".generic-choice").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const feedback=questEl.querySelector(".feedback");
+        const selected=Number(btn.dataset.answer);
+        const q=data.quests[index];
+        if(selected===q.correct){
+          const key=generatedQuestKey(moduleNumber,index);
+          if(!state.completed.has(key)){
+            state.completed.add(key);
+            addXp(20);
+          }
+          feedback.className="feedback good";
+          feedback.textContent="YES — "+q.why+" +20 XP";
+          unlockGenericNextButton(moduleNumber,index);
+          saveProgress();
+          updateGeneratedMap(moduleNumber,"quest",index);
+        }else{
+          feedback.className="feedback bad";
+          feedback.textContent="Not quite. "+q.why;
+        }
+      });
+    });
+
+    const nextBtn=questEl.querySelector(".generic-next");
+    nextBtn.addEventListener("click",()=>{
+      if(nextBtn.disabled) return;
+      if(index===data.quests.length-1) showGeneratedAssessment(moduleNumber);
+      else showGeneratedQuest(moduleNumber,index+1);
+    });
+  });
+
+  screen.querySelectorAll("[data-gmap]").forEach(node=>{
+    node.addEventListener("click",()=>showGeneratedQuest(moduleNumber,Number(node.dataset.gmap)));
+  });
+  const assessmentNode=screen.querySelector(".assessment-node");
+  assessmentNode?.addEventListener("click",()=>showGeneratedAssessment(moduleNumber));
+
+  screen.querySelectorAll(".assessment-question").forEach(qEl=>{
+    qEl.querySelectorAll(".test-answer").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        qEl.querySelectorAll(".test-answer").forEach(b=>b.classList.remove("selected-answer"));
+        btn.classList.add("selected-answer");
+        qEl.dataset.selected=btn.dataset.value;
+      });
+    });
+  });
+
+  screen.querySelector(".submit-module-test")?.addEventListener("click",()=>{
+    const feedback=screen.querySelector(".module-test-feedback");
+    const questions=[...screen.querySelectorAll(".assessment-question")];
+    if(questions.some(q=>q.dataset.selected===undefined)){
+      feedback.className="feedback bad";
+      feedback.textContent="Answer all three questions before submitting.";
+      return;
+    }
+    let score=0;
+    questions.forEach((qEl,i)=>{
+      if(Number(qEl.dataset.selected)===data.assessment[i][2]) score++;
+    });
+    if(score>=2){
+      const testKey=generatedTestKey(moduleNumber);
+      if(!state.completed.has(testKey)){
+        state.completed.add(testKey);
+        addXp(40);
+      }
+      completeModule(moduleNumber);
+      feedback.className="feedback good";
+      feedback.textContent="PASS — "+score+" / 3. Module "+(moduleNumber<12?moduleNumber+1:"course completion")+" unlocked. +40 XP";
+      saveProgress();
+      setTimeout(()=>showGeneratedComplete(moduleNumber),350);
+    }else{
+      feedback.className="feedback bad";
+      feedback.textContent="Score: "+score+" / 3. Review the module and try again. Nothing is locked behind a failed attempt.";
+    }
+  });
+
+  screen.querySelector(".go-next-module")?.addEventListener("click",()=>{
+    if(moduleNumber<12) showModule("module"+(moduleNumber+1));
+    else window.scrollTo({top:0,behavior:"smooth"});
+  });
+  screen.querySelector(".replay-generated-module")?.addEventListener("click",()=>showGeneratedQuest(moduleNumber,0));
+});
+
+// Enhance module switching so every unlocked module returns to its saved place.
+const originalShowModule=showModule;
+showModule=function(moduleId,options={}){
+  const number=Number(moduleId.replace("module",""));
+  if(!state.unlockedModules.has(number)) return;
+  originalShowModule(moduleId,options);
+  if(number>=2) restoreGeneratedModule(number);
+};
+
+document.querySelectorAll(".module-card[data-module-jump]").forEach(btn=>{
+  // Replace the earlier listener's practical effect with the gated state above.
+  btn.addEventListener("click",()=>showModule(btn.dataset.moduleJump));
+});
+
+// Initial restoration for generated modules if the visitor last left there.
+if(state.activeModule>=2 && state.unlockedModules.has(state.activeModule)){
+  showModule("module"+state.activeModule,{scroll:false});
+}
