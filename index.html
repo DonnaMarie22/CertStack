@@ -124,7 +124,19 @@
             <button class="service-chip" type="button" aria-describedby="storage-tip">STORAGE<span class="service-tooltip" id="storage-tip"><strong>Storage</strong><br>Cloud space used to keep files, objects, backups, disks, and other data without owning the physical drives yourself.</span></button>
             <button class="service-chip" type="button" aria-describedby="network-tip">NETWORK<span class="service-tooltip" id="network-tip"><strong>Network</strong><br>The virtual connections and controls that let cloud resources communicate with each other, the internet, or an on-premises network.</span></button>
           </div>
-          <p class="hover-hint">HOVER OR FOCUS A SERVICE FOR A QUICK DEFINITION</p>
+          <p class="hover-hint">HOVER OVER A SERVICE FOR A QUICK DEFINITION</p>
+
+          <div class="cloud-gap-box">
+            <p class="eyebrow">DON'T SKIP THE PHYSICAL LAYER</p>
+            <h3>A VM still runs on a real computer somewhere.</h3>
+            <p>Azure still owns real datacenters full of physical servers, storage, networking equipment, power, and cooling. The cloud does not make that hardware disappear — it moves responsibility for that physical layer to the provider.</p>
+            <div class="gap-split">
+              <div><strong>AZURE HANDLES</strong><span>Physical servers, power, cooling, hardware repairs, and the underlying datacenter network.</span></div>
+              <div><strong>YOU WORK WITH</strong><span>The virtual resources on top: the VM, its settings, storage, network connections, access, and whatever you run on it.</span></div>
+            </div>
+            <p class="gap-teaser"><strong>So how does the VM connect to storage, networks, and other systems?</strong> We build that stack later in the Azure architecture, compute, networking, and storage modules.</p>
+          </div>
+
           <p class="cloud-punchline"><strong>The cloud does not remove compute, databases, storage, or networking.</strong> It changes how you get them: you request them as services instead of building all the physical infrastructure yourself.</p>
         </article>
       </div>
