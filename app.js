@@ -276,6 +276,12 @@ function allGeneratedQuestsComplete(moduleNumber){
   const data=generatedModuleData(moduleNumber);
   return data.quests.every((_,i)=>state.completed.has(generatedQuestKey(moduleNumber,i)));
 }
+function generatedVocabKey(moduleNumber){
+  return "m"+moduleNumber+"vocab";
+}
+function generatedVocabComplete(moduleNumber){
+  return state.completed.has(generatedVocabKey(moduleNumber));
+}
 function updateGeneratedMap(moduleNumber,activeKind,activeIndex=0){
   const screen=document.getElementById("module"+moduleNumber);
   if(!screen) return;
@@ -286,9 +292,16 @@ function updateGeneratedMap(moduleNumber,activeKind,activeIndex=0){
     node.classList.toggle("done",state.completed.has(generatedQuestKey(moduleNumber,i)));
     node.classList.toggle("active",activeKind==="quest" && i===activeIndex);
   });
+  const vocabNode=screen.querySelector(".vocab-node");
+  if(vocabNode){
+    const vocabUnlocked=allGeneratedQuestsComplete(moduleNumber);
+    vocabNode.disabled=!vocabUnlocked;
+    vocabNode.classList.toggle("done",generatedVocabComplete(moduleNumber));
+    vocabNode.classList.toggle("active",activeKind==="vocab");
+  }
   const testNode=screen.querySelector(".assessment-node");
   if(testNode){
-    const testUnlocked=allGeneratedQuestsComplete(moduleNumber);
+    const testUnlocked=generatedVocabComplete(moduleNumber);
     testNode.disabled=!testUnlocked;
     testNode.classList.toggle("done",state.completedModules.has(moduleNumber));
     testNode.classList.toggle("active",activeKind==="assessment");
@@ -299,7 +312,7 @@ function showGeneratedQuest(moduleNumber,index,{scroll=true}={}){
   if(!screen) return;
   if(index>0 && !state.completed.has(generatedQuestKey(moduleNumber,index-1))) return;
 
-  screen.querySelectorAll(".generated-quest,.module-assessment,.module-complete-panel").forEach(el=>el.classList.remove("active"));
+  screen.querySelectorAll(".generated-quest,.module-vocab,.module-assessment,.module-complete-panel").forEach(el=>el.classList.remove("active"));
   const target=screen.querySelector('[data-gquest="'+index+'"]');
   if(!target) return;
   target.classList.add("active");
@@ -311,10 +324,22 @@ function showGeneratedQuest(moduleNumber,index,{scroll=true}={}){
   if(sub) sub.textContent="Module "+moduleNumber+": "+data.title;
   if(scroll) window.scrollTo({top:0,behavior:"smooth"});
 }
-function showGeneratedAssessment(moduleNumber,{scroll=true}={}){
+function showGeneratedVocab(moduleNumber,{scroll=true}={}){
   if(!allGeneratedQuestsComplete(moduleNumber)) return;
   const screen=document.getElementById("module"+moduleNumber);
-  screen.querySelectorAll(".generated-quest,.module-assessment,.module-complete-panel").forEach(el=>el.classList.remove("active"));
+  screen.querySelectorAll(".generated-quest,.module-vocab,.module-assessment,.module-complete-panel").forEach(el=>el.classList.remove("active"));
+  const target=screen.querySelector(".module-vocab");
+  target.classList.add("active");
+  localStorage.setItem("certstack-module-"+moduleNumber+"-position","vocab");
+  updateGeneratedMap(moduleNumber,"vocab");
+  questLabel.textContent="VOCAB MATCH";
+  if(scroll) window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function showGeneratedAssessment(moduleNumber,{scroll=true}={}){
+  if(!generatedVocabComplete(moduleNumber)) return;
+  const screen=document.getElementById("module"+moduleNumber);
+  screen.querySelectorAll(".generated-quest,.module-vocab,.module-assessment,.module-complete-panel").forEach(el=>el.classList.remove("active"));
   const target=screen.querySelector(".module-assessment");
   target.classList.add("active");
   localStorage.setItem("certstack-module-"+moduleNumber+"-position","test");
@@ -338,8 +363,12 @@ function restoreGeneratedModule(moduleNumber){
     return;
   }
   const savedPos=localStorage.getItem("certstack-module-"+moduleNumber+"-position");
-  if(savedPos==="test" && allGeneratedQuestsComplete(moduleNumber)){
+  if(savedPos==="test" && generatedVocabComplete(moduleNumber)){
     showGeneratedAssessment(moduleNumber,{scroll:false});
+    return;
+  }
+  if(savedPos==="vocab" && allGeneratedQuestsComplete(moduleNumber)){
+    showGeneratedVocab(moduleNumber,{scroll:false});
     return;
   }
   if(savedPos && /^q\d+$/.test(savedPos)){
@@ -349,8 +378,9 @@ function restoreGeneratedModule(moduleNumber){
   }
   const data=generatedModuleData(moduleNumber);
   const firstIncomplete=data.quests.findIndex((_,i)=>!state.completed.has(generatedQuestKey(moduleNumber,i)));
-  if(firstIncomplete===-1) showGeneratedAssessment(moduleNumber,{scroll:false});
-  else showGeneratedQuest(moduleNumber,firstIncomplete,{scroll:false});
+  if(firstIncomplete!==-1) showGeneratedQuest(moduleNumber,firstIncomplete,{scroll:false});
+  else if(!generatedVocabComplete(moduleNumber)) showGeneratedVocab(moduleNumber,{scroll:false});
+  else showGeneratedAssessment(moduleNumber,{scroll:false});
 }
 function unlockGenericNextButton(moduleNumber,index){
   const screen=document.getElementById("module"+moduleNumber);
@@ -360,7 +390,7 @@ function unlockGenericNextButton(moduleNumber,index){
   button.disabled=false;
   button.classList.remove("locked-btn");
   const data=generatedModuleData(moduleNumber);
-  button.textContent=index===data.quests.length-1?"UNLOCK MODULE TEST →":"UNLOCK QUEST "+(index+2)+" →";
+  button.textContent=index===data.quests.length-1?"OPEN VOCAB MATCH →":"UNLOCK QUEST "+(index+2)+" →";
 }
 
 document.querySelectorAll(".generated-module").forEach(screen=>{
@@ -400,7 +430,7 @@ document.querySelectorAll(".generated-module").forEach(screen=>{
     const nextBtn=questEl.querySelector(".generic-next");
     nextBtn.addEventListener("click",()=>{
       if(nextBtn.disabled) return;
-      if(index===data.quests.length-1) showGeneratedAssessment(moduleNumber);
+      if(index===data.quests.length-1) showGeneratedVocab(moduleNumber);
       else showGeneratedQuest(moduleNumber,index+1);
     });
   });
@@ -410,6 +440,83 @@ document.querySelectorAll(".generated-module").forEach(screen=>{
   });
   const assessmentNode=screen.querySelector(".assessment-node");
   assessmentNode?.addEventListener("click",()=>showGeneratedAssessment(moduleNumber));
+
+  const vocabSection=screen.querySelector(".module-vocab");
+  if(vocabSection){
+    const vocabKey=generatedVocabKey(moduleNumber);
+    const vocabNext=vocabSection.querySelector(".vocab-next");
+    const vocabFeedback=vocabSection.querySelector(".vocab-feedback");
+    let selectedTerm=null;
+    let selectedDefinition=null;
+    const matched=new Set();
+
+    function restoreVocabComplete(){
+      vocabSection.querySelectorAll(".vocab-card").forEach(card=>card.classList.add("matched-card"));
+      if(vocabNext){
+        vocabNext.disabled=false;
+        vocabNext.classList.remove("locked-btn");
+        vocabNext.textContent="OPEN EXAM PRACTICE →";
+      }
+      if(vocabFeedback){
+        vocabFeedback.className="feedback vocab-feedback good";
+        vocabFeedback.textContent="VOCAB CLEARED — all terms matched.";
+      }
+    }
+
+    if(state.completed.has(vocabKey)) restoreVocabComplete();
+
+    vocabSection.querySelectorAll(".vocab-card").forEach(card=>{
+      card.addEventListener("click",()=>{
+        if(state.completed.has(vocabKey) || card.classList.contains("matched-card")) return;
+        const isTerm=card.classList.contains("vocab-term");
+        const group=isTerm?"term":"definition";
+        vocabSection.querySelectorAll(".vocab-"+group).forEach(c=>c.classList.remove("selected-vocab"));
+        card.classList.add("selected-vocab");
+        if(isTerm) selectedTerm=card; else selectedDefinition=card;
+
+        if(selectedTerm && selectedDefinition){
+          if(selectedTerm.dataset.match===selectedDefinition.dataset.match){
+            const matchId=selectedTerm.dataset.match;
+            matched.add(matchId);
+            selectedTerm.classList.remove("selected-vocab");
+            selectedDefinition.classList.remove("selected-vocab");
+            selectedTerm.classList.add("matched-card");
+            selectedDefinition.classList.add("matched-card");
+            vocabFeedback.className="feedback vocab-feedback good";
+            vocabFeedback.textContent="MATCHED — keep going.";
+            selectedTerm=null;
+            selectedDefinition=null;
+
+            const total=vocabSection.querySelectorAll(".vocab-term").length;
+            if(matched.size===total){
+              state.completed.add(vocabKey);
+              addXp(25);
+              saveProgress();
+              restoreVocabComplete();
+              updateGeneratedMap(moduleNumber,"vocab");
+            }
+          }else{
+            vocabFeedback.className="feedback vocab-feedback bad";
+            vocabFeedback.textContent="Not a match. Try those two again.";
+            const wrongTerm=selectedTerm;
+            const wrongDef=selectedDefinition;
+            wrongTerm.classList.add("wrong-vocab");
+            wrongDef.classList.add("wrong-vocab");
+            setTimeout(()=>{
+              wrongTerm.classList.remove("wrong-vocab","selected-vocab");
+              wrongDef.classList.remove("wrong-vocab","selected-vocab");
+            },500);
+            selectedTerm=null;
+            selectedDefinition=null;
+          }
+        }
+      });
+    });
+
+    vocabNext?.addEventListener("click",()=>showGeneratedAssessment(moduleNumber));
+  }
+
+  screen.querySelector(".vocab-node")?.addEventListener("click",()=>showGeneratedVocab(moduleNumber));
 
   screen.querySelectorAll(".assessment-question").forEach(qEl=>{
     qEl.querySelectorAll(".test-answer").forEach(btn=>{
@@ -426,27 +533,42 @@ document.querySelectorAll(".generated-module").forEach(screen=>{
     const questions=[...screen.querySelectorAll(".assessment-question")];
     if(questions.some(q=>q.dataset.selected===undefined)){
       feedback.className="feedback bad";
-      feedback.textContent="Answer all three questions before submitting.";
+      feedback.textContent="Answer every question before submitting.";
       return;
     }
+    const practice=typeof getPracticeQuestions==="function"?getPracticeQuestions(moduleNumber,data):data.assessment;
     let score=0;
     questions.forEach((qEl,i)=>{
-      if(Number(qEl.dataset.selected)===data.assessment[i][2]) score++;
+      const selected=Number(qEl.dataset.selected);
+      const correct=practice[i][2];
+      const rationale=practice[i][3] || "Review the matching learning concept above.";
+      const r=qEl.querySelector(".question-rationale");
+      if(selected===correct){
+        score++;
+        qEl.classList.add("question-correct");
+        qEl.classList.remove("question-wrong");
+        if(r) r.textContent="✓ "+rationale;
+      }else{
+        qEl.classList.add("question-wrong");
+        qEl.classList.remove("question-correct");
+        if(r) r.textContent="✕ "+rationale;
+      }
     });
-    if(score>=2){
+    const needed=Math.ceil(questions.length*2/3);
+    if(score>=needed){
       const testKey=generatedTestKey(moduleNumber);
       if(!state.completed.has(testKey)){
         state.completed.add(testKey);
-        addXp(40);
+        addXp(50);
       }
       completeModule(moduleNumber);
       feedback.className="feedback good";
-      feedback.textContent="PASS — "+score+" / 3. Module "+(moduleNumber<12?moduleNumber+1:"course completion")+" unlocked. +40 XP";
+      feedback.textContent="PASS — "+score+" / "+questions.length+". Module "+(moduleNumber<12?moduleNumber+1:"course completion")+" unlocked. +50 XP";
       saveProgress();
-      setTimeout(()=>showGeneratedComplete(moduleNumber),350);
+      setTimeout(()=>showGeneratedComplete(moduleNumber),700);
     }else{
       feedback.className="feedback bad";
-      feedback.textContent="Score: "+score+" / 3. Review the module and try again. Nothing is locked behind a failed attempt.";
+      feedback.textContent="Score: "+score+" / "+questions.length+". Review the rationales, go back to learning if needed, and try again.";
     }
   });
 
