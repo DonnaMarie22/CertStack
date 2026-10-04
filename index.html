@@ -92,6 +92,10 @@
       <button class="map-node" data-map="models" disabled>3<br><span>CLOUD MODELS</span></button>
       <div class="map-line"></div>
       <button class="map-node" data-map="cost" disabled>4<br><span>PAY FOR USE</span></button>
+      <div class="map-line"></div>
+      <button id="module1VocabNode" class="map-node" disabled>◆<br><span>VOCAB MATCH</span></button>
+      <div class="map-line"></div>
+      <button id="module1PracticeNode" class="map-node" disabled>★<br><span>EXAM PRACTICE</span></button>
     </nav>
 
     <section id="cloud" class="quest active pixel-panel">
@@ -318,7 +322,59 @@
         <div id="costFeedback" class="feedback"></div>
       </div>
 
-      <button id="finishBtn" class="primary-btn locked-btn" disabled>🔒 COMPLETE THE TEACHING QUEST TO FINISH MODULE</button>
+      <button id="finishBtn" class="primary-btn locked-btn" disabled>🔒 COMPLETE THE TEACHING QUEST TO OPEN VOCAB MATCH</button>
+    </section>
+
+    <section id="module1Vocab" class="quest pixel-panel module-vocab">
+      <div class="quest-copy">
+        <p class="eyebrow">LEARNING GAME // VOCAB MATCH</p>
+        <h2>Match the cloud words to what they actually mean.</h2>
+        <p class="lead">Pick a term, then pick its definition. Clear the board to open exam practice.</p>
+      </div>
+      <div class="vocab-game" id="module1VocabGame">
+        <div class="vocab-column vocab-terms">
+          <h3>TERMS</h3>
+          <button class="vocab-card vocab-term" data-match="0">Cloud computing</button>
+          <button class="vocab-card vocab-term" data-match="1">Virtual machine (VM)</button>
+          <button class="vocab-card vocab-term" data-match="2">Shared responsibility</button>
+          <button class="vocab-card vocab-term" data-match="3">Public cloud</button>
+          <button class="vocab-card vocab-term" data-match="4">Private cloud</button>
+          <button class="vocab-card vocab-term" data-match="5">Hybrid cloud</button>
+          <button class="vocab-card vocab-term" data-match="6">CapEx</button>
+          <button class="vocab-card vocab-term" data-match="7">OpEx</button>
+        </div>
+        <div class="vocab-column vocab-definitions">
+          <h3>DEFINITIONS</h3>
+          <button class="vocab-card vocab-definition" data-match="7">Ongoing spending for services as they are consumed.</button>
+          <button class="vocab-card vocab-definition" data-match="5">An environment connecting public cloud with private or on-premises resources.</button>
+          <button class="vocab-card vocab-definition" data-match="1">A software-defined computer running on physical provider hardware.</button>
+          <button class="vocab-card vocab-definition" data-match="3">Cloud resources operated by a third-party provider and offered to customers.</button>
+          <button class="vocab-card vocab-definition" data-match="6">Up-front spending to buy physical infrastructure.</button>
+          <button class="vocab-card vocab-definition" data-match="2">The division of duties between the provider and customer.</button>
+          <button class="vocab-card vocab-definition" data-match="0">Getting computing services over the internet instead of owning all physical infrastructure yourself.</button>
+          <button class="vocab-card vocab-definition" data-match="4">A cloud environment dedicated to one organization.</button>
+        </div>
+      </div>
+      <div id="module1VocabFeedback" class="feedback vocab-feedback" aria-live="polite"></div>
+      <button id="module1VocabNext" class="primary-btn locked-btn" disabled>🔒 MATCH ALL TERMS TO OPEN EXAM PRACTICE</button>
+    </section>
+
+    <section id="module1Practice" class="quest pixel-panel module-assessment">
+      <div class="quest-copy">
+        <p class="eyebrow">MODULE 1 // EXAM PRACTICE</p>
+        <h2>Now answer it the way the exam might ask it.</h2>
+        <p class="lead">These are original CertStack exam-style questions based on Microsoft's published AZ-900 objectives. They are not copied Microsoft exam questions. Score at least 4 / 6 to unlock Module 2.</p>
+      </div>
+      <div class="assessment-list">
+        <div class="assessment-question" data-m1-q="0"><h3>1. A retailer needs extra computing capacity for six weeks each year and does not want to buy servers that sit idle the rest of the year. Which cloud characteristic best supports this requirement?</h3><div class="answer-list"><button class="answer-btn m1-test-answer" data-value="0">Consumption-based usage</button><button class="answer-btn m1-test-answer" data-value="1">Private cloud only</button><button class="answer-btn m1-test-answer" data-value="2">Capital expenditure</button><button class="answer-btn m1-test-answer" data-value="3">Physical host ownership</button></div><div class="question-rationale"></div></div>
+        <div class="assessment-question" data-m1-q="1"><h3>2. In a public cloud environment, who maintains the physical servers and datacenter cooling?</h3><div class="answer-list"><button class="answer-btn m1-test-answer" data-value="0">The cloud provider</button><button class="answer-btn m1-test-answer" data-value="1">The customer</button><button class="answer-btn m1-test-answer" data-value="2">Application users</button><button class="answer-btn m1-test-answer" data-value="3">Both equally for physical hardware</button></div><div class="question-rationale"></div></div>
+        <div class="assessment-question" data-m1-q="2"><h3>3. A company keeps regulated systems in its own datacenter but uses Azure for temporary web capacity. Which cloud model is this?</h3><div class="answer-list"><button class="answer-btn m1-test-answer" data-value="0">Hybrid cloud</button><button class="answer-btn m1-test-answer" data-value="1">Public cloud only</button><button class="answer-btn m1-test-answer" data-value="2">Private cloud only</button><button class="answer-btn m1-test-answer" data-value="3">SaaS</button></div><div class="question-rationale"></div></div>
+        <div class="assessment-question" data-m1-q="3"><h3>4. Which spending model is most closely associated with purchasing servers before they are needed?</h3><div class="answer-list"><button class="answer-btn m1-test-answer" data-value="0">CapEx</button><button class="answer-btn m1-test-answer" data-value="1">OpEx</button><button class="answer-btn m1-test-answer" data-value="2">Consumption-based billing</button><button class="answer-btn m1-test-answer" data-value="3">Serverless</button></div><div class="question-rationale"></div></div>
+        <div class="assessment-question" data-m1-q="4"><h3>5. Which statement about a cloud VM is correct?</h3><div class="answer-list"><button class="answer-btn m1-test-answer" data-value="0">It runs on real physical hardware managed by the provider</button><button class="answer-btn m1-test-answer" data-value="1">It does not require physical hardware anywhere</button><button class="answer-btn m1-test-answer" data-value="2">The customer powers the Azure datacenter</button><button class="answer-btn m1-test-answer" data-value="3">It cannot connect to storage or networks</button></div><div class="question-rationale"></div></div>
+        <div class="assessment-question" data-m1-q="5"><h3>6. An organization wants cloud resources offered over infrastructure operated by a third-party provider. Which model is being described?</h3><div class="answer-list"><button class="answer-btn m1-test-answer" data-value="0">Public cloud</button><button class="answer-btn m1-test-answer" data-value="1">Private cloud</button><button class="answer-btn m1-test-answer" data-value="2">Hybrid cloud</button><button class="answer-btn m1-test-answer" data-value="3">On-premises only</button></div><div class="question-rationale"></div></div>
+      </div>
+      <button id="module1PracticeSubmit" class="primary-btn">SUBMIT EXAM PRACTICE</button>
+      <div id="module1PracticeFeedback" class="feedback" aria-live="polite"></div>
     </section>
 
     <section id="complete" class="quest pixel-panel">
