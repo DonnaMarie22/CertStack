@@ -30,6 +30,13 @@ const state={
   activeQuest:saved.activeQuest||"cloud"
 };
 
+// Progression rule migration: Module 2+ must be earned through the new Module 1 vocab + exam-practice gate.
+if(!state.completed.has("m1test")){
+  state.completedModules.delete(1);
+  [...state.unlockedModules].forEach(n=>{ if(n>1) state.unlockedModules.delete(n); });
+  if(state.activeModule>1) state.activeModule=1;
+}
+
 const quests=["cloud","shared","models","cost"];
 const questLabel=document.getElementById("questLabel");
 const xpBar=document.getElementById("xpBar");
@@ -511,12 +518,12 @@ function showGeneratedAssessment(moduleNumber,{scroll=true}={}){
   target.classList.add("active");
   localStorage.setItem("certstack-module-"+moduleNumber+"-position","test");
   updateGeneratedMap(moduleNumber,"assessment");
-  questLabel.textContent="MODULE TEST";
+  questLabel.textContent="EXAM PRACTICE";
   if(scroll) window.scrollTo({top:0,behavior:"smooth"});
 }
 function showGeneratedComplete(moduleNumber,{scroll=true}={}){
   const screen=document.getElementById("module"+moduleNumber);
-  screen.querySelectorAll(".generated-quest,.module-assessment,.module-complete-panel").forEach(el=>el.classList.remove("active"));
+  screen.querySelectorAll(".generated-quest,.module-vocab,.module-assessment,.module-complete-panel").forEach(el=>el.classList.remove("active"));
   const target=screen.querySelector(".module-complete-panel");
   target.classList.add("active");
   localStorage.setItem("certstack-module-"+moduleNumber+"-position","complete");
