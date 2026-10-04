@@ -391,3 +391,68 @@ footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;backgr
   .generated-quest-map .map-node{min-width:135px}
   .module-source{flex-direction:column}
 }
+
+/* Vocabulary matching + exam practice */
+.vocab-game{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin:22px 0
+}
+.vocab-column{
+  display:grid;
+  gap:10px;
+  align-content:start;
+  background:#0b1424;
+  border:4px solid #000;
+  padding:16px
+}
+.vocab-column h3{
+  color:var(--yellow);
+  margin-bottom:4px
+}
+.vocab-card{
+  border:3px solid #000;
+  box-shadow:3px 3px 0 #000;
+  background:#18233b;
+  color:var(--text);
+  padding:12px;
+  text-align:left;
+  cursor:pointer;
+  line-height:1.4
+}
+.vocab-term{color:var(--cyan);font-weight:700}
+.vocab-card:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #000}
+.vocab-card.selected-vocab{
+  outline:4px solid var(--yellow);
+  background:#263856
+}
+.vocab-card.matched-card{
+  background:#214531;
+  color:var(--green);
+  cursor:default;
+  opacity:.9
+}
+.vocab-card.wrong-vocab{
+  background:#4a2630;
+  color:#ffabb6;
+  outline:4px solid var(--red)
+}
+.question-rationale{
+  min-height:22px;
+  margin-top:10px;
+  font-size:11px;
+  line-height:1.45;
+  color:var(--muted)
+}
+.assessment-question.question-correct{
+  border-color:var(--green)
+}
+.assessment-question.question-wrong{
+  border-color:var(--red)
+}
+.assessment-question.question-correct .question-rationale{color:var(--green)}
+.assessment-question.question-wrong .question-rationale{color:#ffabb6}
+@media(max-width:800px){
+  .vocab-game{grid-template-columns:1fr}
+}
