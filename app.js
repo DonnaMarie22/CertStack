@@ -98,12 +98,24 @@ function showQuest(id,{scroll=true}={}){
   const idx=quests.indexOf(id);
   questLabel.textContent=id==="complete"?"MODULE COMPLETE":"QUEST "+(idx+1)+" / 4";
 
-  document.querySelectorAll("#module1 .quest-map .map-node").forEach((node,i)=>{
+  document.querySelectorAll("#module1 .quest-map .map-node[data-map]").forEach((node,i)=>{
     const unlocked=questUnlocked(i);
     node.disabled=!unlocked;
     node.classList.toggle("active",i===idx);
     node.classList.toggle("done",state.completed.has(quests[i]));
   });
+  const vocabNode=document.getElementById("module1VocabNode");
+  const practiceNode=document.getElementById("module1PracticeNode");
+  if(vocabNode){
+    vocabNode.disabled=!state.completed.has("cost");
+    vocabNode.classList.toggle("done",state.completed.has("m1vocab"));
+    vocabNode.classList.remove("active");
+  }
+  if(practiceNode){
+    practiceNode.disabled=!state.completed.has("m1vocab");
+    practiceNode.classList.toggle("done",state.completedModules.has(1));
+    practiceNode.classList.remove("active");
+  }
 
   saveProgress();
   if(scroll) window.scrollTo({top:0,behavior:"smooth"});
@@ -122,7 +134,7 @@ function success(feedback,message,button,quest,xp){
     cloudContinue:"UNLOCK QUEST 2 →",
     sharedContinue:"UNLOCK QUEST 3 →",
     modelsContinue:"UNLOCK QUEST 4 →",
-    finishBtn:"COMPLETE MODULE ★"
+    finishBtn:"OPEN VOCAB MATCH →"
   };
   if(labels[button.id]) button.textContent=labels[button.id];
   saveProgress();
@@ -217,19 +229,52 @@ document.querySelectorAll("[data-cost-answer]").forEach(btn=>btn.addEventListene
   }else fail(f,"CapEx is the up-front purchase of physical infrastructure. Paying as you consume cloud services is OpEx.");
 }));
 
-document.getElementById("finishBtn").addEventListener("click",()=>{
-  completeModule(1);
-  showQuest("complete");
-});
+function showModule1Vocab({scroll=true}={}){
+  if(!state.completed.has("cost")) return;
+  document.querySelectorAll("#module1 > .quest").forEach(q=>q.classList.remove("active"));
+  document.getElementById("module1Vocab")?.classList.add("active");
+  document.querySelectorAll("#module1 .quest-map .map-node").forEach(n=>n.classList.remove("active"));
+  const node=document.getElementById("module1VocabNode");
+  if(node){node.disabled=false;node.classList.add("active");}
+  questLabel.textContent="VOCAB MATCH";
+  localStorage.setItem("certstack-module-1-position","vocab");
+  saveProgress();
+  if(scroll) window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function showModule1Practice({scroll=true}={}){
+  if(!state.completed.has("m1vocab")) return;
+  document.querySelectorAll("#module1 > .quest").forEach(q=>q.classList.remove("active"));
+  document.getElementById("module1Practice")?.classList.add("active");
+  document.querySelectorAll("#module1 .quest-map .map-node").forEach(n=>n.classList.remove("active"));
+  const node=document.getElementById("module1PracticeNode");
+  if(node){node.disabled=false;node.classList.add("active");}
+  questLabel.textContent="EXAM PRACTICE";
+  localStorage.setItem("certstack-module-1-position","test");
+  saveProgress();
+  if(scroll) window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function restoreModule1Stage(){
+  if(state.completedModules.has(1)){showQuest("complete",{scroll:false});return;}
+  const pos=localStorage.getItem("certstack-module-1-position");
+  if(pos==="test" && state.completed.has("m1vocab")){showModule1Practice({scroll:false});return;}
+  if(pos==="vocab" && state.completed.has("cost")){showModule1Vocab({scroll:false});return;}
+  showQuest(state.activeQuest,{scroll:false});
+}
+
+document.getElementById("finishBtn").addEventListener("click",()=>showModule1Vocab());
 
 const continueToModule2=document.getElementById("continueToModule2");
 if(continueToModule2) continueToModule2.addEventListener("click",()=>showModule("module2"));
 
 document.getElementById("replayBtn").addEventListener("click",()=>showQuest("cloud"));
 
-document.querySelectorAll("#module1 .quest-map .map-node").forEach((btn,i)=>{
+document.querySelectorAll("#module1 .quest-map .map-node[data-map]").forEach((btn,i)=>{
   btn.addEventListener("click",()=>showQuest(quests[i]));
 });
+document.getElementById("module1VocabNode")?.addEventListener("click",()=>showModule1Vocab());
+document.getElementById("module1PracticeNode")?.addEventListener("click",()=>showModule1Practice());
 
 document.querySelectorAll(".module-card[data-module-jump]").forEach(btn=>{
   btn.addEventListener("click",()=>showModule(btn.dataset.moduleJump));
@@ -257,10 +302,132 @@ renderStats();
 renderRoadmap();
 showModule("module"+state.activeModule,{scroll:false});
 if(state.activeModule===1){
-  if(state.completedModules.has(1)) showQuest("complete",{scroll:false});
-  else showQuest(state.activeQuest,{scroll:false});
+  restoreModule1Stage();
 }
 
+
+// ---------------- MODULE 1 VOCAB + EXAM PRACTICE ----------------
+(function setupModule1Review(){
+  const section=document.getElementById("module1Vocab");
+  if(!section) return;
+  const vocabKey="m1vocab";
+  const next=document.getElementById("module1VocabNext");
+  const feedback=document.getElementById("module1VocabFeedback");
+  let selectedTerm=null;
+  let selectedDefinition=null;
+  const matched=new Set();
+
+  function markVocabComplete(){
+    section.querySelectorAll(".vocab-card").forEach(card=>card.classList.add("matched-card"));
+    if(next){
+      next.disabled=false;
+      next.classList.remove("locked-btn");
+      next.textContent="OPEN EXAM PRACTICE →";
+    }
+    if(feedback){
+      feedback.className="feedback vocab-feedback good";
+      feedback.textContent="VOCAB CLEARED — all terms matched.";
+    }
+    const node=document.getElementById("module1VocabNode");
+    if(node) node.classList.add("done");
+    const testNode=document.getElementById("module1PracticeNode");
+    if(testNode) testNode.disabled=false;
+  }
+
+  if(state.completed.has(vocabKey)) markVocabComplete();
+
+  section.querySelectorAll(".vocab-card").forEach(card=>{
+    card.addEventListener("click",()=>{
+      if(state.completed.has(vocabKey) || card.classList.contains("matched-card")) return;
+      const isTerm=card.classList.contains("vocab-term");
+      const selector=isTerm?".vocab-term":".vocab-definition";
+      section.querySelectorAll(selector).forEach(c=>c.classList.remove("selected-vocab"));
+      card.classList.add("selected-vocab");
+      if(isTerm) selectedTerm=card; else selectedDefinition=card;
+
+      if(selectedTerm && selectedDefinition){
+        if(selectedTerm.dataset.match===selectedDefinition.dataset.match){
+          matched.add(selectedTerm.dataset.match);
+          selectedTerm.classList.remove("selected-vocab");
+          selectedDefinition.classList.remove("selected-vocab");
+          selectedTerm.classList.add("matched-card");
+          selectedDefinition.classList.add("matched-card");
+          feedback.className="feedback vocab-feedback good";
+          feedback.textContent="MATCHED — keep going.";
+          selectedTerm=null;
+          selectedDefinition=null;
+          if(matched.size===section.querySelectorAll(".vocab-term").length){
+            state.completed.add(vocabKey);
+            addXp(25);
+            saveProgress();
+            markVocabComplete();
+          }
+        }else{
+          const t=selectedTerm,d=selectedDefinition;
+          feedback.className="feedback vocab-feedback bad";
+          feedback.textContent="Not a match. Try again.";
+          t.classList.add("wrong-vocab");d.classList.add("wrong-vocab");
+          setTimeout(()=>{t.classList.remove("wrong-vocab","selected-vocab");d.classList.remove("wrong-vocab","selected-vocab");},500);
+          selectedTerm=null;selectedDefinition=null;
+        }
+      }
+    });
+  });
+
+  next?.addEventListener("click",()=>showModule1Practice());
+
+  const practice=document.getElementById("module1Practice");
+  const correct=[0,0,0,0,0,0];
+  const rationales=[
+    "Temporary capacity is a strong fit for consumption-based cloud usage.",
+    "The cloud provider owns and maintains the physical datacenter infrastructure.",
+    "Hybrid cloud combines private or on-premises resources with public cloud.",
+    "Buying physical infrastructure up front is capital expenditure.",
+    "Cloud VMs run on real provider-managed physical hosts.",
+    "Infrastructure operated by a third-party cloud provider is public cloud."
+  ];
+  practice?.querySelectorAll(".assessment-question").forEach(qEl=>{
+    qEl.querySelectorAll(".m1-test-answer").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        qEl.querySelectorAll(".m1-test-answer").forEach(b=>b.classList.remove("selected-answer"));
+        btn.classList.add("selected-answer");
+        qEl.dataset.selected=btn.dataset.value;
+      });
+    });
+  });
+  document.getElementById("module1PracticeSubmit")?.addEventListener("click",()=>{
+    const questions=[...practice.querySelectorAll(".assessment-question")];
+    const out=document.getElementById("module1PracticeFeedback");
+    if(questions.some(q=>q.dataset.selected===undefined)){
+      out.className="feedback bad";
+      out.textContent="Answer every question before submitting.";
+      return;
+    }
+    let score=0;
+    questions.forEach((q,i)=>{
+      const ok=Number(q.dataset.selected)===correct[i];
+      if(ok) score++;
+      q.classList.toggle("question-correct",ok);
+      q.classList.toggle("question-wrong",!ok);
+      const r=q.querySelector(".question-rationale");
+      if(r) r.textContent=(ok?"✓ ":"✕ ")+rationales[i];
+    });
+    if(score>=4){
+      if(!state.completed.has("m1test")){
+        state.completed.add("m1test");
+        addXp(50);
+      }
+      completeModule(1);
+      out.className="feedback good";
+      out.textContent="PASS — "+score+" / 6. Module 2 unlocked. +50 XP";
+      saveProgress();
+      setTimeout(()=>showQuest("complete"),700);
+    }else{
+      out.className="feedback bad";
+      out.textContent="Score: "+score+" / 6. Review the rationales and try again.";
+    }
+  });
+})();
 
 // ---------------- GENERATED MODULES 2-12 ----------------
 function generatedQuestKey(moduleNumber,index){
