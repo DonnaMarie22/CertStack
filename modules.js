@@ -394,4 +394,191 @@ function renderGeneratedModules(){
     </div>`;
   }).join("");
 }
+
+// ---------- LEARN → VOCAB MATCH → EXAM PRACTICE ----------
+const module1StudyData={
+  vocab:[
+    ["Cloud computing","Getting computing services over the internet instead of owning every piece of physical infrastructure yourself."],
+    ["Virtual machine (VM)","A software-defined computer that runs on physical hardware owned by a cloud provider."],
+    ["Shared responsibility","The division of security and management duties between the cloud provider and the customer."],
+    ["Public cloud","Cloud resources operated by a third-party provider and offered to customers over shared provider infrastructure."],
+    ["Private cloud","A cloud environment dedicated to a single organization."],
+    ["Hybrid cloud","An environment that connects public cloud and private or on-premises resources."],
+    ["CapEx","Up-front spending to buy physical infrastructure such as servers and networking equipment."],
+    ["OpEx","Ongoing spending for services as they are consumed."]
+  ],
+  practice:[
+    ["A retailer needs extra computing capacity for six weeks each year and does not want to buy servers that sit idle the rest of the year. Which cloud characteristic best supports this requirement?",["Consumption-based usage","Private cloud only","Capital expenditure","Physical host ownership"],0,"Cloud services can be consumed when needed and reduced when demand falls."],
+    ["In a public cloud environment, who is responsible for maintaining the physical servers and datacenter cooling?",["The cloud provider","The customer","The application users","Both equally for the physical hardware"],0,"The provider owns and maintains the physical datacenter infrastructure."],
+    ["A company keeps regulated systems in its own datacenter but uses Azure for temporary web capacity. Which cloud model is this?",["Hybrid cloud","Public cloud only","Private cloud only","SaaS"],0,"Hybrid cloud combines private/on-premises resources with public cloud resources."],
+    ["Which spending model is most closely associated with purchasing servers before they are needed?",["CapEx","OpEx","Consumption-based billing","Serverless"],0,"Buying physical infrastructure up front is capital expenditure."],
+    ["Which statement about a cloud VM is correct?",["It runs on real physical hardware managed by the provider","It does not require physical hardware anywhere","The customer must power the Azure datacenter","It cannot connect to storage or networks"],0,"A VM is virtualized compute running on physical provider infrastructure."],
+    ["An organization wants cloud resources available to customers over infrastructure operated by a third-party provider. Which model is being described?",["Public cloud","Private cloud","Hybrid cloud","On-premises only"],0,"That is the basic public-cloud model."]
+  ]
+};
+
+const extraPractice={
+  2:[
+    ["A workload must stay online if one server fails. Which benefit is the primary design goal?",["High availability","Vertical scaling","CapEx","Private networking"],0,"High availability focuses on keeping services accessible when failures occur."],
+    ["A team increases the CPU and memory assigned to one VM. What type of scaling is this?",["Vertical scaling","Horizontal scaling","Geo-redundancy","Failover"],0,"Vertical scaling makes a single resource larger or more powerful."],
+    ["Which cloud benefit most directly helps an organization enforce required standards across resources?",["Governance","Archive storage","DNS","ExpressRoute"],0,"Governance provides policies and controls for consistent standards."]
+  ],
+  3:[
+    ["A company wants maximum control over the guest operating system while avoiding ownership of physical servers. Which model fits best?",["IaaS","PaaS","SaaS","Serverless only"],0,"IaaS provides virtualized infrastructure while leaving the guest OS under customer management."],
+    ["Developers want to deploy an application while the provider manages the operating system and runtime. Which service model?",["PaaS","IaaS","SaaS","Private cloud"],0,"PaaS shifts more platform management to the provider."],
+    ["Which service model normally leaves the customer with the least infrastructure-management responsibility?",["SaaS","IaaS","PaaS","Hybrid"],0,"SaaS delivers a finished application and shifts most platform management to the provider."]
+  ],
+  4:[
+    ["Which Azure construct is primarily a billing and access-management boundary that contains resource groups?",["Subscription","Region","Availability Zone","Datacenter"],0,"Azure subscriptions contain resource groups and act as billing/access boundaries."],
+    ["A policy must apply across several Azure subscriptions. Where can it be assigned to create the broadest shared scope?",["Management group","Individual VM","Availability Zone","Subnet"],0,"Management groups sit above subscriptions and support governance across them."],
+    ["Which design places resources in physically separate datacenter locations within the same Azure region?",["Availability Zones","Resource groups","Tags","Subscriptions"],0,"Availability Zones are physically separate locations within a supported region."]
+  ],
+  5:[
+    ["Which Azure compute option is best for event-driven code that should run without managing dedicated servers?",["Azure Functions","Virtual Machines only","Azure DNS","Blob Storage"],0,"Azure Functions is a serverless, event-driven compute service."],
+    ["A company needs many identical VMs and wants the number of instances to change with demand. Which service is designed for this?",["VM Scale Sets","Azure Files","Resource locks","Microsoft Purview"],0,"VM Scale Sets deploy and scale groups of similar VMs."],
+    ["Which option is generally lighter weight than a full VM because it shares the host operating-system kernel?",["Container","Availability Zone","VPN Gateway","Subscription"],0,"Containers package apps and dependencies while sharing the host kernel."]
+  ],
+  6:[
+    ["Two Azure virtual networks must communicate privately. Which feature is designed for this?",["VNet peering","Azure Policy","Cost Management","Archive tier"],0,"VNet peering directly connects Azure virtual networks."],
+    ["A company needs an encrypted connection from its office to Azure over the public internet. Which service is appropriate?",["VPN Gateway","ExpressRoute only","Azure Advisor","RBAC"],0,"VPN Gateway supports encrypted tunnels over the public internet."],
+    ["Which Azure networking concept creates smaller logical network segments inside a VNet?",["Subnet","Subscription","Storage account","Management group"],0,"Subnets divide a VNet address space into smaller segments."]
+  ],
+  7:[
+    ["Which Azure Storage service is most appropriate for managed SMB file shares?",["Azure Files","Blob Storage","Azure DNS","Log Analytics"],0,"Azure Files provides managed file shares."],
+    ["Which redundancy choice stores copies across separate availability zones within one region?",["Zone-redundant storage","Locally redundant storage","Archive tier","Hot tier"],0,"Zone-redundant storage replicates data across availability zones."],
+    ["Which tool is best suited to command-line copying of data to and from Azure Storage?",["AzCopy","Azure Advisor","Microsoft Purview","Conditional Access"],0,"AzCopy is Microsoft's command-line data transfer utility for Azure Storage."]
+  ],
+  8:[
+    ["A user has successfully signed in. Which concept determines what that user is allowed to do next?",["Authorization","Authentication","Scalability","Redundancy"],0,"Authentication proves identity; authorization determines permitted actions."],
+    ["Which Azure feature can require MFA based on sign-in risk or device conditions?",["Conditional Access","Azure DNS","Storage Explorer","VM Scale Sets"],0,"Conditional Access evaluates signals and applies access requirements."],
+    ["Which principle recommends granting only the permissions necessary to perform a task?",["Least privilege","Horizontal scaling","Geo-redundancy","Capital expenditure"],0,"Least privilege reduces unnecessary access."]
+  ],
+  9:[
+    ["A finance team wants an alert when monthly Azure spending approaches a target amount. Which feature should they use?",["Cost Management budget","Availability Zone","Azure DNS","VNet peering"],0,"Cost Management budgets can track spend and generate alerts."],
+    ["Before deploying a proposed architecture, which tool should be used to estimate its expected Azure cost?",["Pricing Calculator","Service Health","Application Insights","Azure Policy"],0,"The Pricing Calculator is designed for pre-deployment cost estimates."],
+    ["Which action is most likely to reduce avoidable Azure cost?",["Remove or right-size unused resources","Add more tags only","Create more subscriptions","Increase every VM size"],0,"Eliminating waste and right-sizing resources are core cost-optimization practices."]
+  ],
+  10:[
+    ["A resource must not be deleted accidentally even by an administrator with normal management permissions. What should be applied?",["Resource lock","Tag","Availability Zone","Pricing Calculator"],0,"A CanNotDelete resource lock protects against accidental deletion."],
+    ["Which Azure governance service evaluates resources against organizational rules?",["Azure Policy","Azure Monitor","Azure DNS","AzCopy"],0,"Azure Policy audits and can enforce resource configuration rules."],
+    ["Which Microsoft service family is associated with data governance, compliance, and information protection?",["Microsoft Purview","VM Scale Sets","ExpressRoute","Azure Files"],0,"Microsoft Purview provides data governance and compliance capabilities."]
+  ],
+  11:[
+    ["Which Azure tool provides a browser-based environment for Azure CLI and Azure PowerShell?",["Cloud Shell","Application Insights","Service Health","Data Box"],0,"Cloud Shell provides browser-accessible command-line environments."],
+    ["An organization wants to manage supported on-premises servers through Azure management capabilities. Which service?",["Azure Arc","Azure DNS","Blob Storage","Cost Management"],0,"Azure Arc extends Azure management to hybrid and multicloud resources."],
+    ["What is the main benefit of infrastructure as code?",["Repeatable, version-controlled deployments","Eliminating all security requirements","Making every resource free","Replacing networking"],0,"Infrastructure as code improves repeatability, consistency, and version control."]
+  ],
+  12:[
+    ["Which service should an administrator check for Azure platform incidents and planned maintenance that may affect their resources?",["Service Health","Azure Advisor","RBAC","Pricing Calculator"],0,"Service Health provides personalized Azure service issues and maintenance information."],
+    ["Which Azure Monitor capability is intended for querying collected log data?",["Log Analytics","ExpressRoute","Resource locks","Azure Policy"],0,"Log Analytics is used to query and analyze log data."],
+    ["A developer wants telemetry about web request duration, dependencies, and application failures. Which feature?",["Application Insights","Azure Files","Microsoft Purview","VNet peering"],0,"Application Insights provides application performance monitoring telemetry."]
+  ]
+};
+
+function getPracticeQuestions(moduleNumber,module){
+  return [...module.assessment,...(extraPractice[moduleNumber]||[])];
+}
+function getModuleVocab(module){
+  const found=[];
+  const seen=new Set();
+  module.quests.forEach(q=>{
+    [...q.body.matchAll(/\[\[([^|\]]+)\|([^\]]+)\]\]/g)].forEach(match=>{
+      const key=match[1].trim().toLowerCase();
+      if(!seen.has(key)){
+        seen.add(key);
+        found.push([match[1].trim(),match[2].trim()]);
+      }
+    });
+  });
+  // Keep the game useful even in modules with only a few inline terms.
+  module.quests.forEach(q=>{
+    if(found.length>=6) return;
+    const label=q.title;
+    const definition=q.points[0]?.replace(/^[A-Z +/&-]+ — /,"") || q.headline;
+    const key=label.toLowerCase();
+    if(!seen.has(key)){
+      seen.add(key);
+      found.push([label,definition]);
+    }
+  });
+  return found.slice(0,8);
+}
+function vocabHtml(moduleNumber,module){
+  const vocab=getModuleVocab(module);
+  return \`
+  <section class="module-vocab quest pixel-panel" data-vocab>
+    <div class="quest-copy">
+      <p class="eyebrow">LEARNING GAME // VOCAB MATCH</p>
+      <h2>Match the words to what they actually mean.</h2>
+      <p class="lead">Pick a term, then pick its definition. This is the memory round before exam practice.</p>
+    </div>
+    <div class="vocab-game" data-vocab-game>
+      <div class="vocab-column vocab-terms">
+        <h3>TERMS</h3>
+        \${vocab.map((v,i)=>\`<button class="vocab-card vocab-term" data-match="\${i}">\${v[0]}</button>\`).join("")}
+      </div>
+      <div class="vocab-column vocab-definitions">
+        <h3>DEFINITIONS</h3>
+        \${[...vocab].reverse().map((v,revIndex)=>{
+          const original=vocab.length-1-revIndex;
+          return \`<button class="vocab-card vocab-definition" data-match="\${original}">\${v[1]}</button>\`;
+        }).join("")}
+      </div>
+    </div>
+    <div class="feedback vocab-feedback" aria-live="polite"></div>
+    <button class="primary-btn vocab-next locked-btn" disabled>🔒 MATCH ALL TERMS TO OPEN EXAM PRACTICE</button>
+  </section>\`;
+}
+function assessmentHtml(moduleNumber,module){
+  const questions=getPracticeQuestions(moduleNumber,module);
+  return \`
+  <section class="module-assessment quest pixel-panel" data-assessment>
+    <div class="quest-copy">
+      <p class="eyebrow">MODULE \${moduleNumber} // EXAM PRACTICE</p>
+      <h2>Now answer it the way the exam might ask it.</h2>
+      <p class="lead">These are original CertStack exam-style questions based on Microsoft's published AZ-900 skills measured. They are not copied Microsoft exam questions. Score at least 4 / 6 to unlock the next module.</p>
+    </div>
+    <div class="assessment-list">
+      \${questions.map((item,qIndex)=>\`
+        <div class="assessment-question" data-test-q="\${qIndex}">
+          <h3>\${qIndex+1}. \${item[0]}</h3>
+          <div class="answer-list">
+            \${item[1].map((option,oIndex)=>\`<button class="answer-btn test-answer" data-value="\${oIndex}">\${option}</button>\`).join("")}
+          </div>
+          <div class="question-rationale"></div>
+        </div>\`).join("")}
+    </div>
+    <button class="primary-btn submit-module-test">SUBMIT EXAM PRACTICE</button>
+    <div class="feedback module-test-feedback" aria-live="polite"></div>
+  </section>\`;
+}
+function renderGeneratedModules(){
+  const mount=document.getElementById("generatedModules");
+  if(!mount) return;
+  mount.innerHTML=Object.entries(moduleCatalog).map(([number,module])=>{
+    const n=Number(number);
+    const questNodes=module.quests.map((q,i)=>\`<button class="map-node \${i===0?"active":""}" data-gmap="\${i}" disabled>\${i+1}<br><span>\${q.title.toUpperCase()}</span></button>\`).join('<div class="map-line"></div>');
+    return \`
+    <div id="module\${n}" class="module-screen generated-module" data-module="\${n}">
+      <section class="module2-hero pixel-panel">
+        <div><p class="eyebrow">MODULE \${n} OF 12 // \${module.world}</p><h2>\${module.title}</h2>
+        <p class="lead">Learn the concepts, lock in the vocabulary, then switch to exam-style practice.</p></div>
+        <div class="module2-meta"><span>\${module.quests.length} TEACHING QUESTS</span><span>VOCAB MATCH</span><span>6 EXAM-STYLE QUESTIONS</span></div>
+      </section>
+      <nav class="quest-map pixel-panel generated-quest-map" aria-label="Module \${n} learning map">\${questNodes}<div class="map-line"></div><button class="map-node vocab-node" disabled>◆<br><span>VOCAB MATCH</span></button><div class="map-line"></div><button class="map-node assessment-node" disabled>★<br><span>EXAM PRACTICE</span></button></nav>
+      \${module.quests.map((q,i)=>moduleQuestCard(n,q,i,module.quests.length)).join("")}
+      \${vocabHtml(n,module)}
+      \${assessmentHtml(n,module)}
+      <section class="module-complete-panel quest pixel-panel" data-module-complete>
+        <div class="completion"><div class="reward-star">★</div><p class="eyebrow">MODULE COMPLETE</p><h2>\${module.title}</h2>
+        <p>You passed the exam-practice gate. The next module is now unlocked and this module stays available for review.</p>
+        <button class="primary-btn go-next-module">\${n<12?"CONTINUE TO MODULE "+(n+1)+" →":"AZ-900 CORE COURSE MAP COMPLETE ★"}</button>
+        <button class="secondary-btn replay-generated-module">REVIEW THIS MODULE</button></div>
+      </section>
+      <div class="module-source pixel-panel"><span>Original CertStack practice mapped to Microsoft Learn / AZ-900 objectives</span>
+      <a href="\${module.source}" target="_blank" rel="noreferrer">OFFICIAL SOURCE ↗</a></div>
+    </div>\`;
+  }).join("");
+}
+
 renderGeneratedModules();
