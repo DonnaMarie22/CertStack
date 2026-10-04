@@ -505,7 +505,7 @@ function getModuleVocab(module){
 }
 function vocabHtml(moduleNumber,module){
   const vocab=getModuleVocab(module);
-  return \`
+  return `
   <section class="module-vocab quest pixel-panel" data-vocab>
     <div class="quest-copy">
       <p class="eyebrow">LEARNING GAME // VOCAB MATCH</p>
@@ -515,69 +515,69 @@ function vocabHtml(moduleNumber,module){
     <div class="vocab-game" data-vocab-game>
       <div class="vocab-column vocab-terms">
         <h3>TERMS</h3>
-        \${vocab.map((v,i)=>\`<button class="vocab-card vocab-term" data-match="\${i}">\${v[0]}</button>\`).join("")}
+        ${vocab.map((v,i)=>`<button class="vocab-card vocab-term" data-match="${i}">${v[0]}</button>`).join("")}
       </div>
       <div class="vocab-column vocab-definitions">
         <h3>DEFINITIONS</h3>
-        \${[...vocab].reverse().map((v,revIndex)=>{
+        ${[...vocab].reverse().map((v,revIndex)=>{
           const original=vocab.length-1-revIndex;
-          return \`<button class="vocab-card vocab-definition" data-match="\${original}">\${v[1]}</button>\`;
+          return `<button class="vocab-card vocab-definition" data-match="${original}">${v[1]}</button>`;
         }).join("")}
       </div>
     </div>
     <div class="feedback vocab-feedback" aria-live="polite"></div>
     <button class="primary-btn vocab-next locked-btn" disabled>🔒 MATCH ALL TERMS TO OPEN EXAM PRACTICE</button>
-  </section>\`;
+  </section>`;
 }
 function assessmentHtml(moduleNumber,module){
   const questions=getPracticeQuestions(moduleNumber,module);
-  return \`
+  return `
   <section class="module-assessment quest pixel-panel" data-assessment>
     <div class="quest-copy">
-      <p class="eyebrow">MODULE \${moduleNumber} // EXAM PRACTICE</p>
+      <p class="eyebrow">MODULE ${moduleNumber} // EXAM PRACTICE</p>
       <h2>Now answer it the way the exam might ask it.</h2>
       <p class="lead">These are original CertStack exam-style questions based on Microsoft's published AZ-900 skills measured. They are not copied Microsoft exam questions. Score at least 4 / 6 to unlock the next module.</p>
     </div>
     <div class="assessment-list">
-      \${questions.map((item,qIndex)=>\`
-        <div class="assessment-question" data-test-q="\${qIndex}">
-          <h3>\${qIndex+1}. \${item[0]}</h3>
+      ${questions.map((item,qIndex)=>`
+        <div class="assessment-question" data-test-q="${qIndex}">
+          <h3>${qIndex+1}. ${item[0]}</h3>
           <div class="answer-list">
-            \${item[1].map((option,oIndex)=>\`<button class="answer-btn test-answer" data-value="\${oIndex}">\${option}</button>\`).join("")}
+            ${item[1].map((option,oIndex)=>`<button class="answer-btn test-answer" data-value="${oIndex}">${option}</button>`).join("")}
           </div>
           <div class="question-rationale"></div>
-        </div>\`).join("")}
+        </div>`).join("")}
     </div>
     <button class="primary-btn submit-module-test">SUBMIT EXAM PRACTICE</button>
     <div class="feedback module-test-feedback" aria-live="polite"></div>
-  </section>\`;
+  </section>`;
 }
 function renderGeneratedModules(){
   const mount=document.getElementById("generatedModules");
   if(!mount) return;
   mount.innerHTML=Object.entries(moduleCatalog).map(([number,module])=>{
     const n=Number(number);
-    const questNodes=module.quests.map((q,i)=>\`<button class="map-node \${i===0?"active":""}" data-gmap="\${i}" disabled>\${i+1}<br><span>\${q.title.toUpperCase()}</span></button>\`).join('<div class="map-line"></div>');
-    return \`
-    <div id="module\${n}" class="module-screen generated-module" data-module="\${n}">
+    const questNodes=module.quests.map((q,i)=>`<button class="map-node ${i===0?"active":""}" data-gmap="${i}" disabled>${i+1}<br><span>${q.title.toUpperCase()}</span></button>`).join('<div class="map-line"></div>');
+    return `
+    <div id="module${n}" class="module-screen generated-module" data-module="${n}">
       <section class="module2-hero pixel-panel">
-        <div><p class="eyebrow">MODULE \${n} OF 12 // \${module.world}</p><h2>\${module.title}</h2>
+        <div><p class="eyebrow">MODULE ${n} OF 12 // ${module.world}</p><h2>${module.title}</h2>
         <p class="lead">Learn the concepts, lock in the vocabulary, then switch to exam-style practice.</p></div>
-        <div class="module2-meta"><span>\${module.quests.length} TEACHING QUESTS</span><span>VOCAB MATCH</span><span>6 EXAM-STYLE QUESTIONS</span></div>
+        <div class="module2-meta"><span>${module.quests.length} TEACHING QUESTS</span><span>VOCAB MATCH</span><span>6 EXAM-STYLE QUESTIONS</span></div>
       </section>
-      <nav class="quest-map pixel-panel generated-quest-map" aria-label="Module \${n} learning map">\${questNodes}<div class="map-line"></div><button class="map-node vocab-node" disabled>◆<br><span>VOCAB MATCH</span></button><div class="map-line"></div><button class="map-node assessment-node" disabled>★<br><span>EXAM PRACTICE</span></button></nav>
-      \${module.quests.map((q,i)=>moduleQuestCard(n,q,i,module.quests.length)).join("")}
-      \${vocabHtml(n,module)}
-      \${assessmentHtml(n,module)}
+      <nav class="quest-map pixel-panel generated-quest-map" aria-label="Module ${n} learning map">${questNodes}<div class="map-line"></div><button class="map-node vocab-node" disabled>◆<br><span>VOCAB MATCH</span></button><div class="map-line"></div><button class="map-node assessment-node" disabled>★<br><span>EXAM PRACTICE</span></button></nav>
+      ${module.quests.map((q,i)=>moduleQuestCard(n,q,i,module.quests.length)).join("")}
+      ${vocabHtml(n,module)}
+      ${assessmentHtml(n,module)}
       <section class="module-complete-panel quest pixel-panel" data-module-complete>
-        <div class="completion"><div class="reward-star">★</div><p class="eyebrow">MODULE COMPLETE</p><h2>\${module.title}</h2>
+        <div class="completion"><div class="reward-star">★</div><p class="eyebrow">MODULE COMPLETE</p><h2>${module.title}</h2>
         <p>You passed the exam-practice gate. The next module is now unlocked and this module stays available for review.</p>
-        <button class="primary-btn go-next-module">\${n<12?"CONTINUE TO MODULE "+(n+1)+" →":"AZ-900 CORE COURSE MAP COMPLETE ★"}</button>
+        <button class="primary-btn go-next-module">${n<12?"CONTINUE TO MODULE "+(n+1)+" →":"AZ-900 CORE COURSE MAP COMPLETE ★"}</button>
         <button class="secondary-btn replay-generated-module">REVIEW THIS MODULE</button></div>
       </section>
       <div class="module-source pixel-panel"><span>Original CertStack practice mapped to Microsoft Learn / AZ-900 objectives</span>
-      <a href="\${module.source}" target="_blank" rel="noreferrer">OFFICIAL SOURCE ↗</a></div>
-    </div>\`;
+      <a href="${module.source}" target="_blank" rel="noreferrer">OFFICIAL SOURCE ↗</a></div>
+    </div>`;
   }).join("");
 }
 
